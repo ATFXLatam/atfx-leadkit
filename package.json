@@ -2,7 +2,14 @@
   "name": "atfx-leadkit",
   "version": "0.0.0",
   "description": "Formularios de captación de leads para landings de ATFX LATAM",
-  "scripts": {},
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage",
+    "build": "node esbuild.config.mjs",
+    "dev": "node esbuild.config.mjs --dev"
+  },
   "license": "UNLICENSED",
   "private": true,
   "type": "module",
