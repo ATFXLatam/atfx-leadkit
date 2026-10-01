@@ -10,3 +10,4 @@ test-results/
 *.p12
 .npmrc
 .DS_Store
+node_modules
