@@ -22,13 +22,13 @@ reviewer y commit de Karen). Una sesión empieza solo cuando todas sus dependenc
 
 | Sesión | Quién | Qué | Depende de | Decisiones | Estado |
 |---|---|---|---|---|---|
-| s0 | Karen | Bootstrap: git, GitHub, dependencias | — | D-01, D-02, D-03, D-18 | BLOQUEADA |
-| s1 | Implementador | Tooling: tsconfig, esbuild multi-entry, vitest, scripts (bundle JS autocontenido por formulario) | s0 | — | LISTA tras s0 |
-| s2 | Implementador | Contrato: constructor del payload + tests golden | s1 | D-09 | BLOQUEADA |
+| s0 | Karen | Bootstrap: git, GitHub, dependencias | — | D-01, D-02, D-03, D-18 | HECHA |
+| s1 | Implementador | Tooling: tsconfig, esbuild multi-entry, vitest, scripts (bundle JS autocontenido por formulario) | s0 | — | HECHA (PR #1) |
+| s2 | Implementador | Contrato: constructor del payload + tests golden | s1 | D-09 | LISTA |
 | s3 | Implementador | Atributos de montaje + URL de Zoom + fechas/zonas/cierre | s1 | D-04, D-25 | BLOQUEADA |
-| s4 | Implementador | Datos (países, prefijos) + i18n | s1 | — | LISTA tras s1 |
-| s5 | Implementador | Schemas de validación de `lead` e `interest` | s4 | D-08 | BLOQUEADA |
-| s6 | Implementador | Cliente de envío (sin reintentos, resultado desconocido) | s2 | D-07 | BLOQUEADA |
+| s4 | Implementador | Datos (países, prefijos) + i18n | s1 | — | EN CURSO (Grok) |
+| s5 | Implementador | Schemas de validación de `lead` e `interest` | s4 | D-08 | LISTA tras s4 |
+| s6 | Implementador | Cliente de envío (sin reintentos, resultado desconocido) | s2 | D-07 | LISTA tras s2 |
 | s7 | Implementador | Render de UI + CSS + honeypot | s3, s4, s5 | D-05, D-10 | BLOQUEADA |
 | s8 | Implementador | Controlador: submit, errores, popup, analítica aislada | s6, s7 | D-12 | BLOQUEADA |
 | s9 | Implementador | Montaje: idempotente, tardío, multi-instancia, entries | s8 | D-11 | BLOQUEADA |
