@@ -2,7 +2,8 @@
 
 Fuente: `research/embed-form-runtime.md` (vanilla TS en light DOM, sin Shadow DOM, sin framework,
 carpetas por feature, un bundle por formulario), `research/embed-form-submit-privacy.md`
-(validación, envío) y la auditoría de arquitectura del paquete viejo.
+(validación, envío), `research/forms-v2-distribution.md` (archivo autocontenido por formulario) y
+la auditoría de arquitectura del paquete viejo.
 
 ## Principios
 
@@ -14,6 +15,8 @@ carpetas por feature, un bundle por formulario), `research/embed-form-submit-pri
    servidor.
 3. **El contrato es un módulo,** no una consecuencia del DOM.
 4. **Sin estado global mutable** salvo el `WeakSet` de nodos montados.
+5. **Un archivo autocontenido por formulario:** el CSS se empaqueta dentro del JS y se inyecta una
+   sola vez como `<style>` por documento.
 
 ## Estructura
 
@@ -49,8 +52,9 @@ atfx-leadkit/
 │   │   ├── fields.ts          # input, select nativo, checkbox, honeypot
 │   │   ├── render.ts          # renderForm(instance) -> HTMLFormElement
 │   │   ├── states.ts          # cerrado / no iniciado / resultado desconocido / errores
-│   │   └── thank-you.ts
-│   ├── styles/leadkit.css
+│   │   ├── thank-you.ts
+│   │   ├── leadkit.css        # fuente CSS (importada como texto)
+│   │   └── styles.ts          # injectStylesOnce(cssText)
 │   └── entries/
 │       ├── lead.ts            # registra el form lead + mountAll
 │       └── interest.ts
@@ -76,10 +80,12 @@ export interface MountAttrs {
   readonly zoomLink: string | null;     // ya validado por safeZoomLink
   readonly webinarTopic: string | null; // recortado a 120
   readonly webinarDate: string | null;  // YYYY-MM-DD HH:mm:ss o null
+  readonly webinarTz: string | null;    // zona IANA para mostrar fecha del webinar
   readonly leadSource: string | null;   // crudo; lo resuelve contract/picklist
   readonly bdmOwner: string | null;     // ya validado o null
-  readonly startsAt: number | null;     // epoch ms
-  readonly expiresAt: number | null;
+  readonly opensAt: number | null;      // epoch ms
+  readonly closesAt: number | null;
+  readonly closedUrl: string | null;    // https del mismo host o allowlist explícita
   readonly scheduleInvalid: boolean;    // fecha presente pero inválida -> fallar cerrado
   readonly country: string | null;      // ISO2 puesto por el servidor
 }
@@ -117,7 +123,7 @@ export interface FormDefinition {
 
 ```
 mount.ts  -> parseMountAttrs(dataset) -> scheduleState(attrs, now)
-          -> si no "open": ui/states (cerrado) y fin
+          -> si no "open": ui/states (cerrado/no iniciado) y fin
           -> controller.create(definition, attrs, dict) -> renderForm -> bind
 submit    -> lock -> honeypot? -> schema.safeParse -> scheduleState otra vez
           -> abrir popup (si webinar) -> buildPayload -> submitLead

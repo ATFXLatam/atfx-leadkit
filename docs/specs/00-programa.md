@@ -23,21 +23,21 @@ reviewer y commit de Karen). Una sesión empieza solo cuando todas sus dependenc
 | Sesión | Quién | Qué | Depende de | Decisiones | Estado |
 |---|---|---|---|---|---|
 | s0 | Karen | Bootstrap: git, GitHub, dependencias | — | D-01, D-02, D-03, D-18 | BLOQUEADA |
-| s1 | Implementador | Tooling: tsconfig, esbuild multi-entry, vitest, scripts | s0 | — | LISTA tras s0 |
+| s1 | Implementador | Tooling: tsconfig, esbuild multi-entry, vitest, scripts (bundle JS autocontenido por formulario) | s0 | — | LISTA tras s0 |
 | s2 | Implementador | Contrato: constructor del payload + tests golden | s1 | D-09 | BLOQUEADA |
-| s3 | Implementador | Atributos de montaje + URL de Zoom + fechas | s1 | D-04 | BLOQUEADA |
+| s3 | Implementador | Atributos de montaje + URL de Zoom + fechas/zonas/cierre | s1 | D-04, D-25 | BLOQUEADA |
 | s4 | Implementador | Datos (países, prefijos) + i18n | s1 | — | LISTA tras s1 |
 | s5 | Implementador | Schemas de validación de `lead` e `interest` | s4 | D-08 | BLOQUEADA |
 | s6 | Implementador | Cliente de envío (sin reintentos, resultado desconocido) | s2 | D-07 | BLOQUEADA |
 | s7 | Implementador | Render de UI + CSS + honeypot | s3, s4, s5 | D-05, D-10 | BLOQUEADA |
 | s8 | Implementador | Controlador: submit, errores, popup, analítica aislada | s6, s7 | D-12 | BLOQUEADA |
 | s9 | Implementador | Montaje: idempotente, tardío, multi-instancia, entries | s8 | D-11 | BLOQUEADA |
-| s10 | Implementador | Caducidad en cliente (abierto / no iniciado / expirado) | s9 | D-14 | BLOQUEADA |
-| s11 | Implementador | Thank-you con variantes | s9 | D-16 | BLOQUEADA |
-| s12 | Implementador | Cumplimiento: avisos y textos legales por idioma | s9 | D-06, D-17 | BLOQUEADA |
+| s10 | Implementador | Caducidad en cliente con `data-opens-at` / `data-closes-at` y CTA de cerrado | s9 | D-14, D-21, D-22, D-24 | BLOQUEADA |
+| s11 | Implementador | Thank-you inline con variantes webinar/producto y conversiones post `success:true` | s9 | D-16, D-24, D-25, D-26, D-27, D-28 | BLOQUEADA |
+| s12 | Implementador | Cumplimiento: avisos y textos legales por idioma | s9 | D-06, D-17, D-28 | BLOQUEADA |
 | s13 | Implementador | E2E Playwright + presupuesto de peso | s9 | D-19 | BLOQUEADA |
-| s14 | Implementador + Karen | Distribución y CI de release | s13 | D-13, D-18 | BLOQUEADA |
-| s15 | Karen / IT | Caducidad y anti-abuso del lado del servidor (WordPress) | s10 | D-14, D-15, D-20 | BLOQUEADA |
+| s14 | Implementador + Karen | Distribución y CI de release (npm + SRI + provenance) | s13 | D-13, D-18, D-29, D-30, D-31, D-32 | BLOQUEADA |
+| s15 | Karen / IT | Caducidad y anti-abuso del lado del servidor (mu-plugin WordPress) | s10 | D-14, D-15, D-20, D-21, D-22, D-23, D-24 | BLOQUEADA |
 | s16 | Karen | `/pentest` sobre el harness local antes del primer release | s13, s14 | — | BLOQUEADA |
 
 Orden sugerido en paralelo (cuando haya más de un implementador): tras s1, las sesiones s2, s3 y

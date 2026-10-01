@@ -36,7 +36,9 @@ Reglas:
   `family-name`, `email`, `tel-national`; `inputmode` adecuado.
 - Preselección: si `attrs.country` existe, preseleccionar país y prefijo (sin red; D-11).
 - Error por campo: `<p id="atfx-<campo>-error-<instanceId>">` + `aria-describedby` + `aria-invalid`.
-- Checkbox de aceptación: `checked` según D-05; su texto viene del diccionario (s12 agrega links).
+- Checkbox de aceptación: único control obligatorio, `checked` según D-05. El texto del
+  consentimiento viene del diccionario y el enlace de privacidad se renderiza fuera del `label`
+  (estructura definida en s12).
 - Honeypot: un input `name="atfx_hp_<instanceId>"`, fuera de la vista con CSS (no `display:none`),
   `tabindex="-1"`, `autocomplete="off"`, `aria-hidden="true"`. `readValues` lo devuelve como `honeypot`.
 - Textos del servidor y del editor siempre con `textContent`; `innerHTML` solo para SVG constantes.
@@ -54,4 +56,5 @@ Reglas:
 - Preselección de país con `attrs.country = "CO"`.
 - `showFieldErrors` con mensaje `<img src=x onerror=alert(1)>` deja texto literal (CA-14, parte UI).
 - Estado inicial del checkbox según D-05.
+- El enlace de privacidad existe por idioma y está fuera del `label` de consentimiento.
 - `setBusy(true)` deshabilita el botón y pone `aria-busy`.
