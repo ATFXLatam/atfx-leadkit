@@ -35,9 +35,11 @@ Métricas de éxito:
 | `data-zoom-link` | URL absoluta `https:` con host `zoom.us` o subdominio | se ignora: modo lead simple |
 | `data-webinar-topic` | texto ≤ 120 | se recorta a 120 |
 | `data-webinar-date` | `YYYY-MM-DD HH:mm:ss` | se omite |
+| `data-webinar-tz` | zona IANA (`America/Mexico_City`) usada solo para mostrar la fecha del webinar | se omite |
 | `data-lead-source` | picklist del contrato | default del contrato |
 | `data-bdm-owner` | `005` + 12 o 15 alfanuméricos | se omite |
-| `data-starts` / `data-expires` | ISO 8601 con zona horaria explícita (`2026-10-06T18:00:00-05:00`) | ver RF-20 |
+| `data-opens-at` / `data-closes-at` | ISO 8601 con offset obligatorio (`2026-10-06T18:00:00-05:00` o `Z`), validado por regex estricta antes de `Date.parse` | ver RF-20 |
+| `data-closed-url` | URL absoluta `https:`; host igual al de la página o en allowlist explícita | se ignora |
 | `data-country` | ISO2 puesto por el servidor (D-11) | se ignora |
 
 ### Validación
@@ -59,7 +61,9 @@ Métricas de éxito:
 - **RF-13** `success: false` muestra los errores por campo que mande el servidor, y si no hay,
   el mensaje genérico. El texto del servidor se inserta siempre como texto.
 - **RF-14** Las integraciones de analítica (GA4 `generate_lead`, GTM `dataLayer`, Meta `Lead`)
-  corren después de mostrar el éxito, cada una aislada: si una lanza error, el éxito no cambia.
+  corren solo tras `success:true`, después de mostrar el éxito y de forma aislada: si una lanza
+  error, el éxito no cambia. Si `aanumber` existe, se usa como `transaction_id` (Google Ads),
+  `eventID` (Meta Pixel) y en el push de `dataLayer`.
 
 ### Webinar y Zoom
 - **RF-15** Con link de Zoom válido el formulario está en modo webinar (campos ocultos del
@@ -69,27 +73,37 @@ Métricas de éxito:
   respaldo (D-12).
 
 ### Consentimiento y cumplimiento
-- **RF-17** La casilla de aceptación arranca según D-05 y es obligatoria.
-- **RF-18** Textos legales y avisos regulatorios por idioma según D-06 y D-17 (sesión s12).
+- **RF-17** Existe un único checkbox obligatorio de consentimiento, desmarcado por defecto (D-05).
+  Su texto cubre solo el contacto solicitado y su error usa el mismo vocabulario que la etiqueta.
+- **RF-18** El consentimiento muestra enlace de privacidad por idioma; además, bajo el botón se
+  renderiza un bloque legal con advertencia de riesgo, entidad/licencia y enlaces de privacidad y
+  términos. En `pt` incluye aviso Levycam/CVM. El opt-in de marketing separado queda pendiente
+  (D-06) por impacto de contrato de campos.
 - **RF-19** El paquete no hace peticiones a terceros (geo-IP u otros) sin consentimiento (D-11).
 
 ### Caducidad de campaña
-- **RF-20** Antes de `data-starts` el formulario muestra "registro aún no abierto"; después de
-  `data-expires` muestra "campaña finalizada" y no permite enviar. Un atributo de fecha inválido
-  o sin zona horaria deja el formulario **cerrado** y emite `console.warn` (fallar cerrado).
-- **RF-21** Si el formulario está abierto al cargar y la fecha de cierre pasa con la página
-  abierta, el siguiente intento de envío se bloquea.
+- **RF-20** Antes de `data-opens-at` el formulario muestra "registro aún no abierto"; cuando
+  `now >= data-closes-at` muestra "campaña finalizada" y no permite enviar. Las fechas se validan
+  con regex estricta antes de `Date.parse`; un valor inválido o sin offset deja el formulario
+  **cerrado** y emite `console.warn` (fallar cerrado). El estado cerrado puede mostrar un CTA con
+  `data-closed-url` solo si pasa su validación.
+- **RF-21** La ventana de campaña se evalúa al montar y también dentro del submit. Si el
+  formulario estaba abierto al cargar y la fecha de cierre pasa con la página abierta, el
+  siguiente intento de envío se bloquea.
 - **RF-22** La capa de servidor que rechaza leads fuera de fecha se define en s15 según D-14.
 
 ### Thank-you
-- **RF-23** Tras éxito se muestra el thank-you según D-16, con variantes webinar y producto
-  (sesión s11).
-- **RF-24** El éxito se anuncia a lectores de pantalla y el foco se mueve al título del
-  thank-you.
+- **RF-23** Tras éxito se muestra thank-you inline (D-16), con variante webinar (tema, fecha,
+  CTA de Zoom de registro, Google Calendar y `.ics` en UTC) y variante producto (un CTA principal
+  y máximo uno secundario). Todo CTA de abrir cuenta incluye advertencia de riesgo (texto Legal,
+  s12). No se promete "te enviamos un correo" sin decisión explícita.
+- **RF-24** El éxito registra una región de estado antes de cambiar su texto y mueve el foco al
+  encabezado del thank-you con `tabindex="-1"`.
 
 ## 3. Requisitos no funcionales
 
-- **RNF-01 Peso:** ≤ 20 KB brotli por formulario (JS + CSS), medido en CI (D-19).
+- **RNF-01 Peso:** ≤ 20 KB brotli por formulario en un único JS autocontenido (incluye CSS
+  inyectado una sola vez), medido en CI (D-19).
 - **RNF-02 Compatibilidad:** últimas 2 versiones de Chrome, Safari, Firefox, Edge; Safari iOS 15+.
   Target de build `es2019`.
 - **RNF-03 Accesibilidad:** WCAG 2.2 AA en el formulario: etiquetas asociadas, errores con
@@ -123,16 +137,24 @@ Formato dado / cuando / entonces. Cada sesión copia los suyos y los vuelve test
 | CA-12 | RF-12 | Dado un `fetch` que no responde en 15 s, entonces hay exactamente un `fetch`, se muestra "resultado desconocido" y el reintento manual hace un segundo `fetch` solo al pulsarlo. |
 | CA-13 | RF-12 | Dada una respuesta HTML (502) o `0`, entonces se muestra "resultado desconocido", no "error de conexión", y no hay reintento automático. |
 | CA-14 | RF-13 | Dado `success:false` con `message` que contiene `<img src=x onerror=...>`, entonces se muestra como texto literal. |
-| CA-15 | RF-14 | Dado `window.gtag` que lanza error, entonces se muestra el thank-you y `dataLayer` y `fbq` igual se llaman. |
+| CA-15 | RF-14 | Dado `window.gtag` que lanza error, entonces se muestra el thank-you y `dataLayer` y `fbq` igual se llaman. Si hay `aanumber`, llega como `transaction_id`, `eventID` y en el push de `dataLayer`. |
 | CA-16 | RF-16 | Dado modo webinar y `success:false`, entonces el popup se cierra. Dado éxito, el popup navega al link y su `opener` es `null`. |
 | CA-17 | RF-17 | Dada la casilla sin marcar, entonces no hay envío y el error se anuncia. |
 | CA-18 | RF-19 | Durante toda la suite, ningún `fetch` sale a un host distinto de `admin-ajax` mockeado. |
-| CA-19 | RF-20 | Dado `data-expires` en el pasado, entonces no hay `<form>` enviable y se muestra el mensaje de campaña finalizada en el idioma. |
-| CA-20 | RF-20 | Dado `data-expires="2026-10-06 18:00"` (sin zona), entonces el formulario queda cerrado y hay un warn. |
-| CA-21 | RF-21 | Dado un formulario abierto, cuando el reloj (fake timers) pasa la fecha de cierre y se envía, entonces no hay `fetch`. |
-| CA-22 | RF-24 | Dado un éxito, entonces existe un elemento `role="status"` con el título y el foco está en el título. |
+| CA-19 | RF-20 | Dado `data-closes-at` en el pasado, entonces no hay `<form>` enviable y se muestra el mensaje de campaña finalizada en el idioma. |
+| CA-20 | RF-20 | Dado `data-closes-at="2026-10-06 18:00"` (sin offset), entonces el formulario queda cerrado y hay un warn. |
+| CA-21 | RF-21 | Dado un formulario abierto, cuando el reloj (fake timers) pasa `data-closes-at` y se envía, entonces no hay `fetch`. |
+| CA-22 | RF-24 | Dado un éxito, entonces la región `role="status"` ya existía antes del cambio de texto y el foco queda en el encabezado del thank-you con `tabindex="-1"`. |
 | CA-23 | RNF-01 | `npm run size` falla si algún bundle supera el presupuesto. |
 | CA-24 | RNF-06 | Un test falla si un diccionario tiene llaves distintas a otro. |
+| CA-25 | RF-17 | Dado un render inicial en `es`, `en` o `pt`, entonces existe un solo checkbox obligatorio de consentimiento y arranca desmarcado. |
+| CA-26 | RF-17 | Dada la validación de consentimiento, entonces el mensaje de error reutiliza el mismo vocabulario de la etiqueta (sin "términos" si la etiqueta no los menciona). |
+| CA-27 | RF-18 | Dado cada idioma (`es`, `en`, `pt`), entonces el consentimiento muestra un enlace de privacidad del mismo idioma y el enlace se renderiza fuera del `label`. |
+| CA-28 | RF-18 | Dado el payload final, entonces no existen campos nuevos para opt-in de marketing y se conserva el contrato de campos actual. |
+| CA-29 | RF-18 | Dado el formulario renderizado, entonces bajo el botón existe un bloque legal con advertencia de riesgo, entidad/licencia y enlaces a privacidad y términos. |
+| CA-30 | RF-18 | Dado `data-lang="pt"`, entonces el bloque legal incluye aviso Levycam/CVM. |
+| CA-31 | RF-18 | Dado el diccionario legal, entonces ninguna llave legal puede quedar vacía ni contener `PENDIENTE_LEGAL`. |
+| CA-32 | RF-18 | Dado el módulo legal, entonces existe un id de versión de consentimiento por idioma exportado y cada cambio de versión se registra en `CHANGELOG.md`. |
 
 ## 5. Datos
 
