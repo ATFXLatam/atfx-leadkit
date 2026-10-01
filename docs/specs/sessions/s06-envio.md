@@ -1,6 +1,6 @@
 # s6 — Cliente de envío
 
-Estado: BLOQUEADA (D-07). Depende de: s2.
+Estado: EN CURSO (Cursor). Depende de: s2. D-07 aprobada: sin reintento automático.
 
 ## Objetivo
 
