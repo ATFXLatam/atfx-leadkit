@@ -1,6 +1,6 @@
 # s2 — Contrato: constructor del payload
 
-Estado: BLOQUEADA (D-09). Depende de: s1.
+Estado: HECHA (PR #5). Depende de: s1.
 
 ## Objetivo
 
@@ -44,7 +44,8 @@ Golden explícitos, escritos a mano a partir del contrato, no generados por el c
 3. lead · en · webinar solo con link (sin topic ni fecha): `Comment` = `Webinar Zoom Link: <z>`.
 4. interest · es · simple, `Trading_Experience__c = "Copytrade"`.
 5. `resolveLeadSource`: explícito válido; `Promotion` → default; con zoom → `Webinar`; sin zoom →
-   `Website`; `" Webinar "` con espacios; mayúsculas distintas (`webinar`) → default.
+   `Website`; mayúsculas distintas (`webinar`) o espacios alrededor (`" Webinar "`) → default,
+   porque `03-contrato-salesforce.md` exige coincidencia exacta con el picklist.
 6. `referer_title` vacío → `ATFX LATAM`; título de 300 caracteres → 200.
 7. `toFormData` conserva todas las entradas y su orden.
 

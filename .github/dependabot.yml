@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # Solo las actions: las deps de npm se suben a mano porque el bundle es público y cada versión
+  # cambia el SRI de las landings.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
