@@ -214,3 +214,10 @@ const fetchMock = vi.fn<typeof fetch>(async () => jsonResponse({ success: true, 
 | 11 | Elementor Pro ajax-handler.php (redistribucion GPL proelements) | proelements | commit 84c616b | 2026-10-01 | medium |
 | 12 | ky timeout.ts, normalize.ts, readme | sindresorhus | commit 0d59458 | 2026-10-01 | high |
 | 13 | ofetch fetch.ts | unjs | commit 1dbc37f | 2026-10-01 | high |
+
+## Reutilizacion
+
+- 2026-10-01, rama `test/fixtures-produccion`: se reusa este brief para fijar como fixtures la
+  captura real de produccion que pedia la seccion 9 (envio exitoso desde `/es/bono-deposito/`,
+  hecho por Karen en DevTools). La respuesta real trae objetos, no `[]`; el payload real coincide
+  con `03-contrato-salesforce.md`. Solo tests; sin cambios de codigo de produccion.
