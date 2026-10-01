@@ -28,7 +28,7 @@ reviewer y commit de Karen). Una sesión empieza solo cuando todas sus dependenc
 | s3 | Implementador | Atributos de montaje + URL de Zoom + fechas/zonas/cierre | s1 | D-04, D-25 | BLOQUEADA |
 | s4 | Implementador | Datos (países, prefijos) + i18n | s1 | — | HECHA (PR #4) |
 | s5 | Implementador | Schemas de validación de `lead` e `interest` | s4 | D-08 | EN CURSO (Grok) |
-| s6 | Implementador | Cliente de envío (sin reintentos, resultado desconocido) | s2 | D-07 | EN CURSO (Cursor) |
+| s6 | Implementador | Cliente de envío (sin reintentos, resultado desconocido) | s2 | D-07 | HECHA |
 | s7 | Implementador | Render de UI + CSS + honeypot | s3, s4, s5 | D-05, D-10 | BLOQUEADA |
 | s8 | Implementador | Controlador: submit, errores, popup, analítica aislada | s6, s7 | D-12 | BLOQUEADA |
 | s9 | Implementador | Montaje: idempotente, tardío, multi-instancia, entries | s8 | D-11 | BLOQUEADA |
