@@ -25,7 +25,7 @@ reviewer y commit de Karen). Una sesión empieza solo cuando todas sus dependenc
 | s0 | Karen | Bootstrap: git, GitHub, dependencias | — | D-01, D-02, D-03, D-18 | HECHA |
 | s1 | Implementador | Tooling: tsconfig, esbuild multi-entry, vitest, scripts (bundle JS autocontenido por formulario) | s0 | — | HECHA (PR #1) |
 | s2 | Implementador | Contrato: constructor del payload + tests golden | s1 | D-09 | HECHA (PR #5) |
-| s3 | Implementador | Atributos de montaje + URL de Zoom + fechas/zonas/cierre | s1 | D-04, D-25 | BLOQUEADA |
+| s3 | Implementador | Atributos de montaje + URL de Zoom + fechas/zonas/cierre | s1 | D-04, D-25 | LISTA |
 | s4 | Implementador | Datos (países, prefijos) + i18n | s1 | — | HECHA (PR #4) |
 | s5 | Implementador | Schemas de validación de `lead` e `interest` | s4 | D-08 | EN CURSO (Grok) |
 | s6 | Implementador | Cliente de envío (sin reintentos, resultado desconocido) | s2 | D-07 | HECHA |
