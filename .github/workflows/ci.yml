@@ -1,0 +1,37 @@
+name: ci
+
+# Sin filtros de path: un check requerido que no corre queda "Pending" y bloquea el merge.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions: {}
+
+# Solo los PR cancelan la corrida anterior: cada commit de main queda verificado.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      # Actions fijadas por SHA: un tag movido no puede cambiar lo que corre en CI.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          # Explicito: setup-node v7 cachea solo si hay packageManager en package.json.
+          cache: npm
+      # ci (no install): falla si package-lock.json no coincide con package.json.
+      - run: npm ci --ignore-scripts
+      - run: npm run typecheck
+      - run: npm run test:cov
+      - run: npm run build
