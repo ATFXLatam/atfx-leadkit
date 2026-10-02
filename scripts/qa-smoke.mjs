@@ -115,11 +115,39 @@ async function runSnippet(page, submissions) {
   assertPayload(sent, { choice: "Principiante", lang: "es" });
 }
 
+const NARROW_VIEWPORT = { width: 360, height: 800 };
+const OVERFLOW_TOLERANCE_PX = 1;
+
+// Grid items default to min-width:auto, so a control can grow past the form's inner edge; measured
+// per form (light and dark) at a phone width, plus page-level horizontal scroll.
+async function runLayout(page) {
+  await page.setViewportSize(NARROW_VIEWPORT);
+  await page.goto(`${page.baseUrl}/`);
+  await page.locator("#late form").waitFor({ timeout: TIMEOUT });
+  const rows = await page.evaluate(() =>
+    ["#lead", "#interest", "#late"].flatMap((id) => {
+      const form = document.querySelector(`${id} form`);
+      const style = getComputedStyle(form);
+      const inner = form.getBoundingClientRect().right - parseFloat(style.paddingRight) - parseFloat(style.borderRightWidth);
+      return [...form.querySelectorAll("input.atfx-leadkit__control, select.atfx-leadkit__control, button.atfx-leadkit__submit")].map((el) => ({
+        id,
+        name: el.getAttribute("name") ?? el.className,
+        over: Math.round((el.getBoundingClientRect().right - inner) * 100) / 100,
+      }));
+    }),
+  );
+  check(rows.length >= 3 * 7, `layout: expected controls in 3 forms, found ${rows.length}`);
+  const bad = rows.filter((row) => row.over > OVERFLOW_TOLERANCE_PX);
+  check(bad.length === 0, `controls overflow the form inner edge: ${bad.map((r) => `${r.id} ${r.name} +${r.over}px`).join(", ")}`);
+  const scroll = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  check(scroll <= 0, `document has horizontal scroll (${scroll}px)`);
+}
+
 async function runEngine(engine, baseUrl, submissions) {
   const browser = await engine.launch();
   const errors = [];
   try {
-    for (const run of [runPreview, runSnippet]) {
+    for (const run of [runPreview, runSnippet, runLayout]) {
       const page = await browser.newPage();
       page.baseUrl = baseUrl;
       page.setDefaultTimeout(TIMEOUT);

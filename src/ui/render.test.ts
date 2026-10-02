@@ -288,6 +288,22 @@ describe("leadkit.css", () => {
     expect(css).toContain("[data-atfx-leadkit]");
   });
 
+  test("grid items declare min-width: 0 so controls cannot blow out the form column", () => {
+    const hasMinWidth = (pattern: RegExp) =>
+      rules.some((rule) => pattern.test(rule.selector) && /min-width:\s*0\s*(;|$)/.test(rule.body));
+    expect(hasMinWidth(/__field$/)).toBe(true);
+    expect(hasMinWidth(/input\.atfx-leadkit__control$/)).toBe(true);
+    expect(hasMinWidth(/select\.atfx-leadkit__control$/)).toBe(true);
+    expect(hasMinWidth(/__consent-row$/) || /grid-template-columns:\s*24px minmax\(0,\s*1fr\)/.test(css)).toBe(true);
+  });
+
+  test("the root keeps border-box: it is not part of the box-sizing: inherit rule", () => {
+    const inheritRules = rules.filter((rule) => /box-sizing:\s*inherit/.test(rule.body));
+    expect(inheritRules.length).toBeGreaterThan(0);
+    for (const rule of inheritRules) expect(rule.selector).not.toBe(".atfx-leadkit");
+    expect(css).toMatch(/\.atfx-leadkit \{[^}]*box-sizing:\s*border-box/);
+  });
+
   test("every selector starts at the widget root", () => {
     expect(rules.length).toBeGreaterThan(10);
     for (const rule of rules) {
