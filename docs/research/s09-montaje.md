@@ -1,6 +1,6 @@
 # Reference Brief: Montaje s09 (idempotente, tardio, multi-instancia) en light DOM sobre WordPress/Elementor
 
-Slug: s09-montaje | Nivel: standard | Fecha: 2026-10-02 | Estado: ESCALADO
+Slug: s09-montaje | Nivel: standard | Fecha: 2026-10-02 | Estado: APROBADO
 Versiones: typescript=5.9.3, vitest=5.0.3, jsdom=30.1.1, esbuild=0.28.2
 Verificador: research-verifier 2026-10-02 ESCALATE
 
