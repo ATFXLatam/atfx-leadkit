@@ -15,7 +15,7 @@ export const en = {
     select: "Select",
   },
   acceptance:
-    "By submitting this form, I agree that ATFX may use my contact information to contact me about its products and services. I can unsubscribe at any time. See our Privacy Policy.",
+    "PENDIENTE_LEGAL: I authorize ATFX to use my contact details to respond to my request.",
   phoneTitle: "Only numbers and phone characters (#, -, *, etc).",
   submit: "Register now",
   leadOptions: [
@@ -37,7 +37,7 @@ export const en = {
     country: "Select your country",
     tradingExperience: "Select your experience",
     interest: "Select a topic",
-    acceptance: "You must accept the terms to continue",
+    acceptance: "PENDIENTE_LEGAL: You must authorize ATFX to contact you about your request.",
   },
   errors: {
     unknownResult: "We couldn't confirm whether the registration was sent.",

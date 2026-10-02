@@ -1,0 +1,183 @@
+.atfx-leadkit {
+  --atfx-bg: #ffffff;
+  --atfx-fg: #111827;
+  --atfx-muted: #4b5563;
+  --atfx-border: #6b7280;
+  --atfx-input-bg: #ffffff;
+  --atfx-focus: #1d4ed8;
+  --atfx-danger: #b91c1c;
+  --atfx-button-bg: #0f172a;
+  --atfx-button-fg: #ffffff;
+  box-sizing: border-box;
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--atfx-border);
+  border-radius: 0.75rem;
+  background: var(--atfx-bg);
+  color: var(--atfx-fg);
+  font: 400 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  animation: atfx-leadkit-enter 220ms ease-out;
+}
+
+.atfx-leadkit[data-theme="dark"] {
+  --atfx-bg: #0f172a;
+  --atfx-fg: #f8fafc;
+  --atfx-muted: #cbd5e1;
+  --atfx-border: #64748b;
+  --atfx-input-bg: #0b1220;
+  --atfx-focus: #93c5fd;
+  --atfx-danger: #fecaca;
+  --atfx-button-bg: #e2e8f0;
+  --atfx-button-fg: #0f172a;
+}
+
+[data-atfx-leadkit] {
+  min-height: 22rem;
+}
+
+.atfx-leadkit,
+.atfx-leadkit * {
+  box-sizing: inherit;
+}
+
+.atfx-leadkit .atfx-leadkit__field {
+  display: grid;
+  gap: 0.375rem;
+  margin: 0;
+}
+
+.atfx-leadkit .atfx-leadkit__label {
+  display: block;
+  margin: 0;
+  color: var(--atfx-fg);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__control,
+.atfx-leadkit.atfx-leadkit.atfx-leadkit select.atfx-leadkit__control,
+.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit {
+  margin: 0;
+  border: 1px solid var(--atfx-border);
+  border-radius: 0.625rem;
+  background: var(--atfx-input-bg);
+  color: var(--atfx-fg);
+  font: inherit;
+  line-height: 1.3;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.75rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit select.atfx-leadkit__control {
+  padding-right: 2.25rem;
+  background-image: linear-gradient(45deg, transparent 50%, var(--atfx-fg) 50%),
+    linear-gradient(135deg, var(--atfx-fg) 50%, transparent 50%);
+  background-position: calc(100% - 1.125rem) 50%, calc(100% - 0.8125rem) 50%;
+  background-size: 0.3125rem 0.3125rem, 0.3125rem 0.3125rem;
+  background-repeat: no-repeat;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__control:focus,
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit select.atfx-leadkit__control:focus,
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit:focus,
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__checkbox:focus {
+  outline: 3px solid var(--atfx-focus);
+  outline-offset: 2px;
+}
+
+.atfx-leadkit .atfx-leadkit__field--consent {
+  gap: 0.5rem;
+}
+
+.atfx-leadkit .atfx-leadkit__consent-row {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  column-gap: 0.625rem;
+  align-items: start;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__checkbox {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border: 1px solid var(--atfx-border);
+  border-radius: 0.25rem;
+  background: var(--atfx-input-bg);
+  color: var(--atfx-fg);
+  -webkit-appearance: checkbox;
+  appearance: auto;
+}
+
+.atfx-leadkit .atfx-leadkit__consent-label,
+.atfx-leadkit .atfx-leadkit__consent-privacy {
+  margin: 0;
+  color: var(--atfx-muted);
+  font-size: 0.9375rem;
+}
+
+.atfx-leadkit .atfx-leadkit__consent-privacy a {
+  color: var(--atfx-fg);
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit {
+  background: var(--atfx-button-bg);
+  color: var(--atfx-button-fg);
+  border-color: transparent;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.atfx-leadkit .atfx-leadkit__error {
+  margin: 0;
+  color: var(--atfx-danger);
+  font-size: 0.875rem;
+}
+
+.atfx-leadkit .atfx-leadkit__error[hidden] {
+  display: none;
+}
+
+.atfx-leadkit .atfx-leadkit__honeypot-container {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+.atfx-leadkit .atfx-leadkit__honeypot {
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+@keyframes atfx-leadkit-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atfx-leadkit {
+    animation: none;
+  }
+}
