@@ -25,12 +25,12 @@ reviewer y commit de Karen). Una sesión empieza solo cuando todas sus dependenc
 | s0 | Karen | Bootstrap: git, GitHub, dependencias | — | D-01, D-02, D-03, D-18 | HECHA |
 | s1 | Implementador | Tooling: tsconfig, esbuild multi-entry, vitest, scripts (bundle JS autocontenido por formulario) | s0 | — | HECHA (PR #1) |
 | s2 | Implementador | Contrato: constructor del payload + tests golden | s1 | D-09 | HECHA (PR #5) |
-| s3 | Implementador | Atributos de montaje + URL de Zoom + fechas/zonas/cierre | s1 | D-04, D-25 | HECHA |
+| s3 | Implementador | Atributos de montaje + URL de Zoom + fechas/zonas/cierre | s1 | D-04, D-25 | HECHA (PR #11) |
 | s4 | Implementador | Datos (países, prefijos) + i18n | s1 | — | HECHA (PR #4) |
-| s5 | Implementador | Schemas de validación de `lead` e `interest` | s4 | D-08 | HECHA |
-| s6 | Implementador | Cliente de envío (sin reintentos, resultado desconocido) | s2 | D-07 | HECHA |
-| s7 | Implementador | Render de UI + CSS + honeypot | s3, s4, s5 | D-05, D-10 | BLOQUEADA |
-| s8 | Implementador | Controlador: submit, errores, popup, analítica aislada | s6, s7 | D-12 | BLOQUEADA |
+| s5 | Implementador | Schemas de validación de `lead` e `interest` | s4 | D-08 | HECHA (PR #12) |
+| s6 | Implementador | Cliente de envío (sin reintentos, resultado desconocido) | s2 | D-07 | HECHA (PR #8) |
+| s7 | Implementador | Render de UI + CSS + honeypot | s3, s4, s5 | D-05, D-10 | HECHA (PR #14) |
+| s8 | Implementador | Controlador: submit, errores, popup, analítica aislada | s6, s7 | D-12 | HECHA (PR #13) |
 | s9 | Implementador | Montaje: idempotente, tardío, multi-instancia, entries | s8 | D-11 | HECHA |
 | s10 | Implementador | Caducidad en cliente con `data-opens-at` / `data-closes-at` y CTA de cerrado | s9 | D-14, D-21, D-22, D-24 | BLOQUEADA |
 | s11 | Implementador | Thank-you inline con variantes webinar/producto y conversiones post `success:true` | s9 | D-16, D-24, D-25, D-26, D-27, D-28 | BLOQUEADA |

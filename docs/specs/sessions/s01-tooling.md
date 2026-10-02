@@ -1,6 +1,6 @@
 # s1 — Tooling
 
-Estado: LISTA tras s0. Depende de: s0.
+Estado: HECHA (PR #1). Depende de: s0.
 
 ## Objetivo
 

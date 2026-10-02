@@ -1,6 +1,6 @@
 # s6 — Cliente de envío
 
-Estado: HECHA. Depende de: s2. D-07 aprobada: sin reintento automático.
+Estado: HECHA (PR #8). Depende de: s2. D-07 aprobada: sin reintento automático.
 
 ## Objetivo
 

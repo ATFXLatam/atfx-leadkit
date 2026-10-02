@@ -1,6 +1,6 @@
 # s8 — Controlador de una instancia
 
-Estado: LISTA. Depende de: s6, s7.
+Estado: HECHA (PR #13). Depende de: s6, s7.
 
 ## Objetivo
 

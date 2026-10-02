@@ -1,6 +1,6 @@
 # s3 — Atributos de montaje, URL de Zoom y fechas/zonas
 
-Estado: HECHA. Depende de: s1 (usa los tipos de s2 si ya existen; si no, los crea en
+Estado: HECHA (PR #11). Depende de: s1 (usa los tipos de s2 si ya existen; si no, los crea en
 `src/contract/types.ts` con la misma forma).
 
 ## Objetivo
