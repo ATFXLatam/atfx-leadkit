@@ -213,3 +213,14 @@ Decision 3, como llega el CSS al bundle (no es archivo de s07, pero s07 lo neces
 | 13 | axe-core aria-hidden-focus | Deque | @6efcb6e | 2026-10-02 | high |
 | 14 | Tailwind CSS v3 configuration, important | Tailwind Labs | v3 | 2026-10-02 | medium |
 | 15 | Reusados: embed-form-runtime, forms-v2-compliance, embed-form-submit-privacy | este repo | 2026-10-01 | 2026-10-02 | medium |
+
+## Reuso (2026-10-02, rama `fix/s07-input-overflow`)
+
+Este brief sostiene el fix del desbordamiento de controles reportado por Karen en el preview:
+los controles del formulario (secciones de UI y CSS de este brief) se salian del borde interno.
+Causa principal: el root `.atfx-leadkit` estaba en la regla `box-sizing: inherit`, asi que perdia
+su propio `border-box` y heredaba el `content-box` del host; con `width: 100%` mas padding y borde,
+cada control medi­a 26px (y 50px en selects) de mas. El fix saca el root de esa regla. Como refuerzo
+agrega `min-width: 0` a los grid items y `minmax(0, 1fr)` a la fila de consentimiento, sin cambiar
+colores, especificidad de foco ni las reglas de iOS 15 ya cubiertas aqui. No introduce APIs ni
+dependencias nuevas.
