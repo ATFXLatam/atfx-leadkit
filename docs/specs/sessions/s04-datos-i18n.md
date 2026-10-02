@@ -1,6 +1,6 @@
 # s4 — Datos e i18n
 
-Estado: LISTA tras s1. Depende de: s1.
+Estado: HECHA (PR #4). Depende de: s1.
 
 ## Objetivo
 

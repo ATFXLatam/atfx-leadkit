@@ -1,6 +1,6 @@
 # s5 — Schemas de validación
 
-Estado: BLOQUEADA (D-08). Depende de: s4.
+Estado: HECHA (PR #12). Depende de: s4.
 
 ## Objetivo
 
