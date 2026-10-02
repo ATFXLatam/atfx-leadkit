@@ -114,10 +114,10 @@ export type SubmitResult =
 
 export type ScheduleState = "open" | "not-started" | "expired" | "invalid";
 
+// s9: solo la key; las opciones y el schema salen de `forms/` por key. Se amplía cuando un
+// formulario necesite algo que no derive de su key.
 export interface FormDefinition {
   readonly key: FormKey;
-  readonly choiceOptions: ReadonlyArray<{ readonly value: string; readonly labelKey: string }>;
-  readonly createSchema: (dict: Dict) => import("zod").ZodType<LeadValues>;
 }
 ```
 

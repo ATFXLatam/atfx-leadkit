@@ -1,6 +1,6 @@
 # s9 — Montaje
 
-Estado: LISTA (D-11 aprobada: 5B). Depende de: s8.
+Estado: HECHA. Depende de: s8.
 
 ## Objetivo
 
@@ -19,7 +19,7 @@ API pública.
 ```ts
 export function mountAll(definition: FormDefinition, root?: ParentNode): number; // cuántos montó
 export function observe(definition: FormDefinition): () => void;                   // devuelve disconnect
-declare global { interface Window { atfxLeadkit?: { readonly version: string; mount(root?: ParentNode): void } } }
+declare global { interface Window { atfxLeadkit?: { readonly versions: Partial<Record<FormKey, string>>; readonly forms: WeakSet<HTMLFormElement>; register(key: FormKey, mount: (root?: ParentNode) => number): boolean; mount(root?: ParentNode): void } } }
 ```
 
 Reglas:
