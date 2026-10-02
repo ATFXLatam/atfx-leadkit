@@ -1,6 +1,6 @@
 # s8 — Controlador de una instancia
 
-Estado: BLOQUEADA (D-12). Depende de: s6, s7.
+Estado: LISTA. Depende de: s6, s7.
 
 ## Objetivo
 
@@ -52,3 +52,16 @@ Secuencia del submit (ver `04-arquitectura.md`):
 
 CA-08, CA-11, CA-12 (con UI), CA-13 (con UI), CA-15, CA-16, CA-17, CA-21; y: el foco va al primer
 campo inválido; `unknown` no dispara analítica; `rejected` no dispara analítica.
+
+## Decisiones de Karen (2026-10-02, brief `s08-controlador`)
+
+- Popup de Zoom: `window.open("about:blank", "_blank")` sin features, sincrónico en el handler
+  de submit antes de cualquier `await`; `opener = null` de inmediato; se navega a `zoomLink`
+  solo tras `ok` y se cierra en `rejected` / `unknown`. Se acepta que Zoom reciba el origen de la
+  landing como Referer. El CTA de respaldo se muestra siempre en un éxito de webinar.
+- Rechazo: la persona ve solo el mensaje del diccionario y los errores por campo; el `message`
+  de Elementor no se muestra.
+- `schedule()` se inyecta en las dependencias del controlador; s9 pasa una que siempre devuelve
+  abierta hasta que s10 ponga la real.
+- La UI llega como puerto inyectado (`setBusy`, `showFieldErrors`, `showState`), definido por
+  s8; s9 lo conecta con el render de s7. Resuelve el `InstanceContext` sin definir.
