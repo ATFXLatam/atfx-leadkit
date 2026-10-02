@@ -43,6 +43,7 @@ export const pt = {
     unknownResult: "Não foi possível confirmar se o cadastro foi enviado.",
     generic: "Não foi possível concluir seu registro. Verifique seus dados.",
     rejected: "Não foi possível aceitar o cadastro. Verifique os dados marcados.",
+    retry: "Tentar novamente",
   },
   schedule: {
     notStarted: "O cadastro ainda não está aberto",

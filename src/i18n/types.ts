@@ -39,6 +39,7 @@ export interface Dict {
     readonly unknownResult: string;
     readonly generic: string;
     readonly rejected: string;
+    readonly retry: string;
   };
   readonly schedule: {
     readonly notStarted: string;

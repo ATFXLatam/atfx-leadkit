@@ -586,7 +586,7 @@ describe("bindController", () => {
     harness.setShowState((state) => {
       harness.states.push(state);
       if (state.kind === "unknown") {
-        renderUnknownResult(harness.host, state.message, state.onRetry);
+        renderUnknownResult(harness.host, state.message, state.onRetry, dict.errors.retry);
       }
     });
     harness.setResult({ kind: "unknown", reason: "timeout" });
@@ -836,6 +836,27 @@ describe("round 2: no orphan popup", () => {
     expect(harness.busy).toEqual([true, false]);
   });
 
+  it("closes the popup and frees the lock when setBusy throws on both calls", async () => {
+    const harness = mount({ zoomLink: ZOOM });
+    harness.setBusy(() => {
+      throw new Error("busy failed");
+    });
+    // jsdom reports a listener exception as a window error event instead of throwing.
+    const escaped = vi.fn();
+    window.addEventListener("error", escaped);
+    harness.fire();
+    await settle();
+    window.removeEventListener("error", escaped);
+    expect(escaped).not.toHaveBeenCalled();
+    expect(harness.popup.close).toHaveBeenCalledTimes(1);
+    harness.setBusy((value) => {
+      harness.busy.push(value);
+    });
+    harness.fire();
+    await settle();
+    expect(harness.submit).toHaveBeenCalledTimes(1);
+  });
+
   it.each([
     ["rejected", { kind: "rejected", fieldErrors: {} }],
     ["unknown", { kind: "unknown", reason: "timeout" }],
@@ -953,7 +974,7 @@ describe("states", () => {
   it("renders the unknown message as text and retries from the button", () => {
     const host = document.createElement("div");
     const onRetry = vi.fn();
-    const button = renderUnknownResult(host, `${dict.errors.unknownResult} ${SERVER_HTML}`, onRetry);
+    const button = renderUnknownResult(host, `${dict.errors.unknownResult} ${SERVER_HTML}`, onRetry, dict.errors.retry);
     expect(button.textContent).toBe("Intentar de nuevo");
     expect(button.type).toBe("button");
     expect(host.textContent).toContain(SERVER_HTML);

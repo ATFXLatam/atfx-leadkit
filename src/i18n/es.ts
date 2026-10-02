@@ -43,6 +43,7 @@ export const es = {
     unknownResult: "No pudimos confirmar si el registro se envió.",
     generic: "No pudimos completar tu registro. Revisa los datos.",
     rejected: "No pudimos aceptar el registro. Revisa los datos marcados.",
+    retry: "Intentar de nuevo",
   },
   schedule: {
     notStarted: "El registro aún no está abierto",

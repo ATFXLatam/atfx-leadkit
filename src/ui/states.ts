@@ -1,20 +1,23 @@
 import type { Dict } from "../i18n/types";
 
-const RETRY_LABEL = "Intentar de nuevo";
-
 export function renderRejected(parent: HTMLElement, message: string): void {
   const paragraph = document.createElement("p");
   paragraph.textContent = message;
   parent.replaceChildren(paragraph);
 }
 
-export function renderUnknownResult(parent: HTMLElement, message: string, onRetry: () => void): HTMLButtonElement {
+export function renderUnknownResult(
+  parent: HTMLElement,
+  message: string,
+  onRetry: () => void,
+  retryLabel: string,
+): HTMLButtonElement {
   const panel = document.createElement("div");
   const paragraph = document.createElement("p");
   paragraph.textContent = message;
   const button = document.createElement("button");
   button.type = "button";
-  button.textContent = RETRY_LABEL;
+  button.textContent = retryLabel;
   button.addEventListener("click", () => {
     onRetry();
   });
