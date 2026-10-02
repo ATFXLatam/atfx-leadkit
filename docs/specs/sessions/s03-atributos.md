@@ -1,6 +1,6 @@
 # s3 — Atributos de montaje, URL de Zoom y fechas/zonas
 
-Estado: BLOQUEADA (D-04, D-25). Depende de: s1 (usa los tipos de s2 si ya existen; si no, los crea en
+Estado: HECHA. Depende de: s1 (usa los tipos de s2 si ya existen; si no, los crea en
 `src/contract/types.ts` con la misma forma).
 
 ## Objetivo
@@ -64,3 +64,17 @@ Reglas de `parseMountAttrs` (tabla RF-05 de `01-requisitos.md`):
   `data-webinar-tz` válido/inválido y `data-closed-url`.
 
 Cubre: CA-04 (parte pura), CA-05, CA-06, CA-20 (parte pura). Cobertura 100 % de estos módulos.
+
+## Decisiones de Karen (2026-10-01, brief `s03-atributos`)
+
+- Los atributos son los de RF-05: `data-atfx-leadkit="<form>"` más `data-*` simples (`data-lang`,
+  `data-zoom-link`...). No hay prefijo por campo.
+- `data-country` con `XX` o `T1` (Cloudflare sin país o Tor) → `null`.
+- `data-lang` acepta guion bajo como guion medio: `pt_BR` → `pt`.
+- `data-webinar-date` con forma correcta pero valores imposibles (mes 13, hora 99) → `null`: no
+  se envía `Webinar_date_time__c` ni esa parte del `Comment`.
+- `safeZoomLink` y `safeClosedUrl` rechazan puerto explícito y credenciales (`user:pass@`).
+- `data-webinar-tz` solo acepta nombres IANA; una zona con offset (`+01:00`) → `null`, para que
+  Node y Safari iOS 15 se comporten igual.
+- D-14 aprobada en su capa cliente: `data-opens-at` / `data-closes-at` ISO 8601 con offset
+  obligatorio y regex estricta antes de `Date.parse`.

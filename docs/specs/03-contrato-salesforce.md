@@ -83,7 +83,14 @@ host agregue dentro del `<form>` no se envía.
 
 - `success: true` significa **encolado** en WordPress, no que el lead exista en SF.
 - Las llaves de `errors` vienen como nombres de campo de Elementor (`first_name`, etc.).
-- La respuesta se valida con schema (s5). Lo que no cumpla el schema es "resultado desconocido".
+- La respuesta se valida con schema (s6). Lo que no cumpla el schema es "resultado desconocido".
+- `data`, `data.errors` y `data.data` pueden llegar como `[]` cuando están vacíos: Elementor Pro
+  los inicializa como arrays de PHP y `json_encode` los serializa así. El schema acepta **solo un
+  array vacío** como objeto vacío; un array con elementos sigue siendo inválido (Karen, 2026-10-01,
+  brief `s06-envio-cliente`). Pendiente: fijar como fixtures una respuesta real de éxito y una de
+  rechazo, capturadas por Karen o IT desde DevTools (un agente nunca llama al admin-ajax real).
+- Los rechazos llegan con HTTP 200: decide `success`, no `response.ok`. Los cuerpos `0` y `-1`
+  son JSON válido y el schema los rechaza.
 
 ## Códigos de idioma
 

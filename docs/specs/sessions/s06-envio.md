@@ -1,6 +1,6 @@
 # s6 — Cliente de envío
 
-Estado: EN CURSO (Cursor). Depende de: s2. D-07 aprobada: sin reintento automático.
+Estado: HECHA. Depende de: s2. D-07 aprobada: sin reintento automático.
 
 ## Objetivo
 
@@ -29,11 +29,12 @@ Comportamiento:
 - Un solo `fetch` a `ENDPOINT`, `method: "POST"`, `body: toFormData(entries)`,
   `headers: { "X-Requested-With": "XMLHttpRequest" }`, `signal` con timeout.
 - **Nunca** reintenta.
-- Abort por timeout → `{ kind: "unknown", reason: "timeout" }`.
+- El timeout cubre `fetch` y `response.json()`; abort por timeout → `{ kind: "unknown", reason: "timeout" }`.
 - `fetch` rechaza → `{ kind: "unknown", reason: "network" }`.
 - Cuerpo que no es JSON, o JSON que no cumple el schema → `{ kind: "unknown", reason: "invalid-response" }`.
 - `success: true` → `{ kind: "ok", aanumber }`.
 - `success: false` → `{ kind: "rejected", fieldErrors: data.errors ?? {}, message: data.message }`.
+- Si `toFormData` lanza, `submitLead` rechaza sin llamar a `fetch`: es un bug del llamador, no un resultado desconocido.
 - Ningún `console.*` con contenido del payload.
 
 ## Tests primero (fake timers, `fetchImpl` mockeado)
