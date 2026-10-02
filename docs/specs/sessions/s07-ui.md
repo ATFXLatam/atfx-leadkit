@@ -1,6 +1,6 @@
 # s7 — Render de UI, CSS y honeypot
 
-Estado: LISTA (D-05 y D-10 aprobadas). Depende de: s3, s4, s5.
+Estado: HECHA (PR #14). Depende de: s3, s4, s5.
 
 ## Objetivo
 

@@ -1,6 +1,6 @@
 # s0 — Bootstrap del repo (Karen)
 
-Estado: BLOQUEADA hasta aprobar D-02, D-03 y D-18.
+Estado: HECHA.
 Quién: Karen. Ningún agente ejecuta esta sesión: son acciones de git, GitHub y dependencias.
 
 ## Pasos
