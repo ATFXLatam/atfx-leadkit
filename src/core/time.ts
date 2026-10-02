@@ -1,3 +1,6 @@
+import type { MountAttrs } from "../contract/types";
+import type { ScheduleState } from "./controller";
+
 const ISO_WITH_ZONE_REGEX =
   /^(\d{4})-(\d{2})-(\d{2})T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/;
 
@@ -49,4 +52,9 @@ export function parseIsoWithZone(raw: string): number | null {
     return null;
   }
   return timestamp;
+}
+
+// HACK: only separates open from invalid. s10 adds not-started and expired from opensAt/closesAt.
+export function scheduleState(attrs: MountAttrs, _now: number): ScheduleState {
+  return attrs.scheduleInvalid ? "invalid" : "open";
 }

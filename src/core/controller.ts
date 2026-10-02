@@ -89,14 +89,18 @@ export function bindController(form: HTMLFormElement, ctx: InstanceContext, deps
       void finish(form, ctx, deps, plan).finally(release);
     } catch {
       // A throw here must not leave the form locked or the blank tab orphaned.
-      release();
       closePopup(plan.popup);
+      release();
     }
   });
 
   function release(): void {
     inFlight = false;
-    deps.ui.setBusy(false);
+    try {
+      deps.ui.setBusy(false);
+    } catch {
+      // The lock is already free; a paint error here must not escape the listener or the promise chain.
+    }
   }
 }
 
@@ -155,7 +159,7 @@ function firstInvalid(errors: Partial<Record<FieldKey, string>>): FieldKey | und
   return FIELD_ORDER.find((key) => errors[key] !== undefined);
 }
 
-function closedMessage(messages: Dict, schedule: Exclude<ScheduleState, "open">): string {
+export function closedMessage(messages: Dict, schedule: Exclude<ScheduleState, "open">): string {
   if (schedule === "not-started") return messages.schedule.notStarted;
   if (schedule === "expired") return messages.schedule.expired;
   return messages.errors.generic;

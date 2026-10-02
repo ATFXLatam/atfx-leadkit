@@ -43,6 +43,7 @@ export const en = {
     unknownResult: "We couldn't confirm whether the registration was sent.",
     generic: "We couldn't complete your registration. Please check your details.",
     rejected: "We couldn't accept the registration. Check the highlighted details.",
+    retry: "Try again",
   },
   schedule: {
     notStarted: "Registration is not open yet",
