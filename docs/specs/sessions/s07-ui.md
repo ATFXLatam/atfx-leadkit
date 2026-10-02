@@ -1,6 +1,6 @@
 # s7 — Render de UI, CSS y honeypot
 
-Estado: BLOQUEADA (D-05, D-10). Depende de: s3, s4, s5.
+Estado: LISTA (D-05 y D-10 aprobadas). Depende de: s3, s4, s5.
 
 ## Objetivo
 
@@ -12,6 +12,11 @@ Renderizar el formulario en light DOM, accesible, aislado del CSS del host y sin
 - `src/ui/render.ts`
 - `src/styles/leadkit.css`
 - `src/ui/render.test.ts`
+- `src/styles/styles.ts` — `injectStylesOnce(cssText)`: un solo `<style>` por página aunque haya varias instancias
+- `src/styles/css.d.ts` — `declare module "*.css"` (texto)
+- `src/entries/lead.ts`, `src/entries/interest.ts` — importan `../styles/leadkit.css` como texto
+- `esbuild.config.mjs` — loader `text` para `.css`; se retira el plugin `placeholder-css` y la clave `css` del manifest (un archivo autocontenido por formulario, D-13)
+- `src/i18n/es.ts`, `en.ts`, `pt.ts` — solo las claves de la casilla
 
 ## API
 
@@ -58,3 +63,12 @@ Reglas:
 - Estado inicial del checkbox según D-05.
 - El enlace de privacidad existe por idioma y está fuera del `label` de consentimiento.
 - `setBusy(true)` deshabilita el botón y pone `aria-busy`.
+
+## Decisiones de Karen (2026-10-02, brief `s07-ui`)
+
+- La casilla usa texto provisional en es/en/pt que cubre solo el contacto solicitado (D-05,
+  CA-26), con un error que usa el mismo vocabulario que la etiqueta y un link de privacidad
+  provisional por idioma. Cada texto provisional lleva el marcador `PENDIENTE_LEGAL`; s12 lo
+  reemplaza y su test falla si queda alguno. El texto actual ("productos y servicios",
+  "términos") se retira.
+- s7 conecta el CSS al bundle: vive en `src/styles/`, se importa como texto y se inyecta una vez.

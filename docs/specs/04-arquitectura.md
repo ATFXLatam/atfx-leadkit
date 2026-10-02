@@ -52,8 +52,10 @@ atfx-leadkit/
 │   │   ├── fields.ts          # input, select nativo, checkbox, honeypot
 │   │   ├── render.ts          # renderForm(instance) -> HTMLFormElement
 │   │   ├── states.ts          # cerrado / no iniciado / resultado desconocido / errores
-│   │   ├── thank-you.ts
+│   │   └── thank-you.ts
+│   ├── styles/
 │   │   ├── leadkit.css        # fuente CSS (importada como texto)
+│   │   ├── css.d.ts           # declare module "*.css"
 │   │   └── styles.ts          # injectStylesOnce(cssText)
 │   └── entries/
 │       ├── lead.ts            # registra el form lead + mountAll
