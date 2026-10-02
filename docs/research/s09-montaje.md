@@ -249,3 +249,12 @@ Bloque 5. D-11 (decide Karen)
 | 12 | Typeform embed initialize.ts, browser.ts | typeform/embed | ffcede3 | 2026-10-02 | high |
 | 13 | Cal.com embed-snippet | calcom/cal.com | 54343aa | 2026-10-02 | medium |
 | 14 | jsdom mutation-observers.js | jsdom/jsdom | v30.1.1 (0a117f4) | 2026-10-02 | high |
+
+## Reuso (2026-10-02, rama `chore/qa-kit`)
+
+Este brief sostiene el kit de QA (`scripts/qa-kit.mjs`, `scripts/qa-smoke.mjs`), pedido por Karen
+para probar el montaje en staging: arma los bundles IIFE de s09, escribe una snippet por
+formulario para un widget HTML de Elementor (secciones 3 y 8: Custom Code / ubicación,
+`data-cfasync`) y una preview local con admin-ajax simulado para correr las pruebas de la sección
+9 (popup tardío, dos formularios en una página) sin llamar a WordPress ni a Salesforce. No
+introduce APIs ni dependencias nuevas (Playwright ya es devDependency).
