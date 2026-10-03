@@ -45,6 +45,7 @@ Salesforce.
 - [QA local y en WordPress](#qa-local-y-en-wordpress)
 - [Flujo de desarrollo](#flujo-de-desarrollo)
 - [Estructura del repositorio](#estructura-del-repositorio)
+- [License](#license)
 
 ---
 
@@ -275,3 +276,11 @@ scripts/          kit de QA (qa-kit.mjs, qa-smoke.mjs)
 src/              código (ver Arquitectura)
 .github/          CI (verify)
 ```
+
+## License
+
+`UNLICENSED`. Código propietario de ATFX LATAM; el paquete es `private: true` y no se
+distribuye. Sin una licencia abierta, se reservan todos los derechos: no se autoriza
+copia, uso ni redistribución fuera del equipo.
+
+Al publicar en npm (s14, decisión D-13) se fijará aquí el identificador SPDX definitivo.
