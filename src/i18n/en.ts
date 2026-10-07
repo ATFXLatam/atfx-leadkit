@@ -13,6 +13,7 @@ export const en = {
   },
   placeholders: {
     select: "Select",
+    search: "Search...",
   },
   acceptance:
     "PENDIENTE_LEGAL: I authorize ATFX to use my contact details to respond to my request.",

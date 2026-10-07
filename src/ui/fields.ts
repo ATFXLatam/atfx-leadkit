@@ -34,6 +34,17 @@ export interface FieldDefaults {
   readonly diallingCode: string | null;
 }
 
+// Regional-indicator pair: the same emoji flags the dialling labels already carry.
+export function flagEmoji(iso2: string): string {
+  return String.fromCodePoint(...Array.from(iso2.toUpperCase(), (char) => 0x1f1e6 + char.charCodeAt(0) - 65));
+}
+
+export function countryDisplay(option: HTMLOptionElement): string {
+  const country = COUNTRIES.find((entry) => entry.iso3 === option.value);
+  const name = option.textContent ?? "";
+  return country === undefined ? name : `${flagEmoji(country.iso2)} ${name}`;
+}
+
 export function fieldId(fieldName: FieldName, instanceId: string): string {
   return `atfx-${fieldName}-${instanceId}`;
 }

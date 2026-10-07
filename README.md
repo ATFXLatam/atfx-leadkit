@@ -212,6 +212,20 @@ El `<div>` marcador acepta estos `data-*` (todos opcionales salvo la key):
 | `data-webinar-topic` / `data-webinar-date` / `data-webinar-tz` | datos del webinar |
 | `data-debug` | imprime la versión en consola |
 
+## Apariencia
+
+El formulario pinta su propia tarjeta con el lenguaje visual de `at_forms` (campos rellenos,
+etiquetas mono en mayúsculas, acento cian, desplegables con buscador y banderas). Las fuentes
+se heredan de la página: el cuerpo usa la fuente del contenedor y las etiquetas leen
+`--atfx-font-mono`, que la página puede declarar en cualquier ancestro:
+
+```css
+.mi-landing { --atfx-font-mono: "Interval", ui-monospace, monospace; }
+```
+
+Los `<select>` nativos siguen en el DOM como fuente del valor (el payload no cambia); el
+desplegable visible es una capa encima (`src/ui/combobox.ts`).
+
 ## Build y scripts
 
 ```bash

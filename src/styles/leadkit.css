@@ -1,36 +1,71 @@
-.atfx-leadkit {
+/* Visual language ported from at_forms v1.0.12 as it renders on the ATFX landings (light
+   card, filled fields, mono uppercase labels, cyan accent). Deliberate departures, all for
+   WCAG AA and guarded by render.test.ts / render.r2.test.ts: control border #7a89a1 (3:1),
+   select placeholder #5b6b87 (4.5:1), error text #d92d20 (4.8:1), focus outline #0e7490
+   (3:1, the cyan accent is 1.8:1 on white) and a 24px checkbox target (2.5.8).
+   Colour mixes are written as literal rgba values for iOS 15. */
+
+.atfx-leadkit,
+[data-atfx-leadkit] .atfx-leadkit-status {
   --atfx-bg: #ffffff;
-  --atfx-fg: #111827;
-  --atfx-muted: #4b5563;
-  --atfx-border: #6b7280;
-  --atfx-input-bg: #ffffff;
-  --atfx-focus: #1d4ed8;
-  --atfx-danger: #b91c1c;
-  --atfx-button-bg: #0f172a;
+  --atfx-fg: #172b4f;
+  --atfx-muted: #68758d;
+  --atfx-placeholder: #5b6b87;
+  --atfx-border: #7a89a1;
+  --atfx-input-bg: #e6eef9;
+  --atfx-card-border: rgba(23, 43, 79, 0.12);
+  --atfx-focus: #0e7490;
+  --atfx-accent: #22d3ee;
+  --atfx-accent-text: #002b36;
+  --atfx-option-hover: rgba(34, 211, 238, 0.1);
+  --atfx-option-selected: rgba(34, 211, 238, 0.15);
+  --atfx-danger: #f04438;
+  --atfx-danger-text: #d92d20;
+  --atfx-button-bg: #0a1a40;
   --atfx-button-fg: #ffffff;
-  box-sizing: border-box;
-  display: grid;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 1rem;
-  border: 1px solid var(--atfx-border);
-  border-radius: 0.75rem;
-  background: var(--atfx-bg);
-  color: var(--atfx-fg);
-  font: 400 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  animation: atfx-leadkit-enter 220ms ease-out;
+  --atfx-panel-bg: #ffffff;
+  --atfx-ease: cubic-bezier(0.625, 0.05, 0, 1);
+  --atfx-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.atfx-leadkit[data-theme="dark"] {
+.atfx-leadkit[data-theme="dark"],
+[data-atfx-leadkit] .atfx-leadkit-status[data-theme="dark"] {
   --atfx-bg: #0f172a;
-  --atfx-fg: #f8fafc;
-  --atfx-muted: #cbd5e1;
-  --atfx-border: #64748b;
-  --atfx-input-bg: #0b1220;
-  --atfx-focus: #93c5fd;
-  --atfx-danger: #fecaca;
-  --atfx-button-bg: #e2e8f0;
-  --atfx-button-fg: #0f172a;
+  --atfx-fg: #ffffff;
+  --atfx-muted: #c3c5ca;
+  --atfx-placeholder: #898e97;
+  --atfx-border: #6a6f7b;
+  --atfx-input-bg: #1d2537;
+  --atfx-focus: #22d3ee;
+  --atfx-card-border: rgba(255, 255, 255, 0.12);
+  --atfx-danger: #f04438;
+  --atfx-danger-text: #fda29b;
+  --atfx-button-bg: #ffffff;
+  --atfx-button-fg: #0a1a40;
+  --atfx-panel-bg: #1e2c3e;
+}
+
+/* The form paints its own card. Fonts are inherited from the host page; the mono labels
+   read --atfx-font-mono so a host can hand in its own (declared on any ancestor). */
+.atfx-leadkit {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  column-gap: 16px;
+  /* 16px of air plus the 22px an error line takes, so showing an error never moves the rows. */
+  row-gap: 38px;
+  align-items: start;
+  margin: 0;
+  padding: 40px clamp(20px, 5vw, 72px);
+  border: 1px solid var(--atfx-card-border);
+  border-radius: 32px;
+  background: var(--atfx-bg);
+  color: var(--atfx-fg);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  animation: atfx-leadkit-enter 220ms ease-out;
 }
 
 [data-atfx-leadkit] {
@@ -45,63 +80,297 @@
 
 /* min-width:0 on grid items: min-width:auto lets controls grow to intrinsic width and escape the column. */
 .atfx-leadkit .atfx-leadkit__field {
+  position: relative;
   display: grid;
+  grid-column: 1 / -1;
   min-width: 0;
-  gap: 0.375rem;
+  gap: 6px;
   margin: 0;
+}
+
+.atfx-leadkit .atfx-leadkit__field--firstName,
+.atfx-leadkit .atfx-leadkit__field--lastName,
+.atfx-leadkit .atfx-leadkit__field--email,
+.atfx-leadkit .atfx-leadkit__field--country,
+.atfx-leadkit .atfx-leadkit__field--choice {
+  grid-column: span 5;
+}
+
+.atfx-leadkit .atfx-leadkit__field--diallingCode {
+  grid-column: span 2;
+}
+
+.atfx-leadkit .atfx-leadkit__field--phone {
+  grid-column: span 3;
 }
 
 .atfx-leadkit .atfx-leadkit__label {
   display: block;
   margin: 0;
-  color: var(--atfx-fg);
-  font-weight: 600;
-  line-height: 1.3;
+  color: var(--atfx-muted);
+  font-family: var(--atfx-font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
+
+.atfx-leadkit .atfx-leadkit__required {
+  color: var(--atfx-danger);
+}
+
+/* ─── Text inputs and the combobox trigger share one control look ─────────────────── */
 
 .atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__control,
 .atfx-leadkit.atfx-leadkit.atfx-leadkit select.atfx-leadkit__control,
-.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit {
-  margin: 0;
-  border: 1px solid var(--atfx-border);
-  border-radius: 0.625rem;
-  background: var(--atfx-input-bg);
-  color: var(--atfx-fg);
-  font: inherit;
-  line-height: 1.3;
+.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__combobox-trigger {
+  display: block;
   width: 100%;
   min-width: 0;
-  min-height: 2.75rem;
-  padding: 0.625rem 0.75rem;
+  height: 44px;
+  margin: 0;
+  padding: 0 2.5em 0 0.85em;
+  border: 1px solid var(--atfx-border);
+  border-radius: 4px;
+  background: var(--atfx-input-bg);
+  color: var(--atfx-fg);
+  -webkit-text-fill-color: var(--atfx-fg);
+  font-family: inherit;
+  font-size: 0.95em;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: left;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__combobox-trigger {
+  display: flex;
+  align-items: center;
+  padding-right: 2.2em;
+  cursor: pointer;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__control:-webkit-autofill {
+  -webkit-text-fill-color: var(--atfx-fg);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* The border turns cyan as in at_forms; the outline is what meets 3:1 for the focus ring. */
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__control:focus,
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit select.atfx-leadkit__control:focus,
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__combobox-trigger:focus {
+  border-color: var(--atfx-accent);
+  outline: 2px solid var(--atfx-focus);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__control[aria-invalid="true"],
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__combobox-trigger[aria-invalid="true"] {
+  border-color: var(--atfx-danger);
+  animation: atfx-leadkit-shake 250ms linear;
+}
+
+.atfx-leadkit .atfx-leadkit__input-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.atfx-leadkit .atfx-leadkit__field-icon {
+  position: absolute;
+  top: 0;
+  right: 0.7em;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  width: 1.1em;
+  color: var(--atfx-danger);
+  opacity: 0;
+  pointer-events: none;
+  -webkit-filter: blur(3px);
+  filter: blur(3px);
+  transform: scale(0.3);
+  transition: opacity 0.2s ease-in-out, filter 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.atfx-leadkit .atfx-leadkit__field-icon svg {
+  display: block;
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.atfx-leadkit input[aria-invalid="true"] ~ .atfx-leadkit__field-icon {
+  opacity: 1;
+  -webkit-filter: blur(0);
+  filter: blur(0);
+  transform: scale(1);
+}
+
+/* ─── Combobox (country, dialling code, choice) ───────────────────────────────────── */
+
+.atfx-leadkit .atfx-leadkit__combobox {
+  position: relative;
+  min-width: 0;
+}
+
+/* Stacks the open panel over the fields that come after it in the grid. */
+.atfx-leadkit .atfx-leadkit__combobox[data-open] {
+  z-index: 10;
+}
+
+.atfx-leadkit .atfx-leadkit__combobox::after {
+  content: "";
+  position: absolute;
+  top: 22px;
+  right: 0.95em;
+  width: 0.45em;
+  height: 0.45em;
+  border-right: 2px solid var(--atfx-muted);
+  border-bottom: 2px solid var(--atfx-muted);
+  transform: translateY(-65%) rotate(45deg);
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.atfx-leadkit .atfx-leadkit__combobox[data-open]::after {
+  transform: translateY(-35%) rotate(-135deg);
+}
+
+.atfx-leadkit .atfx-leadkit__combobox-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.atfx-leadkit .atfx-leadkit__combobox-trigger[data-placeholder] .atfx-leadkit__combobox-value {
+  color: var(--atfx-placeholder);
+  -webkit-text-fill-color: var(--atfx-placeholder);
+  font-family: var(--atfx-font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* visibility (not only opacity) keeps the closed panel's search out of the Tab order. */
+.atfx-leadkit .atfx-leadkit__combobox-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: 0;
+  z-index: 50;
+  overflow: hidden;
+  border: 1px solid var(--atfx-card-border);
+  border-radius: 4px;
+  background: var(--atfx-panel-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(0.97);
+  transform-origin: top left;
+  transition: transform 0.22s var(--atfx-ease-out), opacity 0.22s var(--atfx-ease-out), visibility 0s linear 0.22s;
+}
+
+.atfx-leadkit .atfx-leadkit__combobox-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: scale(1);
+  transition: transform 0.22s var(--atfx-ease-out), opacity 0.22s var(--atfx-ease-out), visibility 0s;
+}
+
+.atfx-leadkit .atfx-leadkit__combobox-panel.is-closing {
+  transform: scale(0.99);
+  transition: transform 0.14s var(--atfx-ease-out), opacity 0.14s var(--atfx-ease-out), visibility 0s linear 0.14s;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__combobox-search {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.6em 0.85em;
+  border: 0;
+  border-bottom: 1px solid var(--atfx-card-border);
+  border-radius: 0;
+  background: var(--atfx-input-bg);
+  color: var(--atfx-fg);
+  -webkit-text-fill-color: var(--atfx-fg);
+  font-family: inherit;
+  font-size: 0.95em;
+  outline: none;
   -webkit-appearance: none;
   appearance: none;
 }
 
-.atfx-leadkit.atfx-leadkit.atfx-leadkit select.atfx-leadkit__control {
-  padding-right: 2.25rem;
-  background-image: linear-gradient(45deg, transparent 50%, var(--atfx-fg) 50%),
-    linear-gradient(135deg, var(--atfx-fg) 50%, transparent 50%);
-  background-position: calc(100% - 1.125rem) 50%, calc(100% - 0.8125rem) 50%;
-  background-size: 0.3125rem 0.3125rem, 0.3125rem 0.3125rem;
-  background-repeat: no-repeat;
+.atfx-leadkit .atfx-leadkit__combobox-search::placeholder {
+  color: var(--atfx-placeholder);
+  -webkit-text-fill-color: var(--atfx-placeholder);
+  font-family: var(--atfx-font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__control:focus,
-.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit select.atfx-leadkit__control:focus,
-.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit:focus,
-.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__checkbox:focus {
-  outline: 3px solid var(--atfx-focus);
-  outline-offset: 2px;
+.atfx-leadkit .atfx-leadkit__combobox-list {
+  max-height: 200px;
+  margin: 0;
+  padding: 0.25em 0;
+  overflow-y: auto;
+  list-style: none;
 }
+
+.atfx-leadkit .atfx-leadkit__combobox-option {
+  margin: 0;
+  padding: 0.5em 0.85em;
+  color: var(--atfx-fg);
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.atfx-leadkit .atfx-leadkit__combobox-option[hidden] {
+  display: none;
+}
+
+.atfx-leadkit .atfx-leadkit__combobox-option:hover,
+.atfx-leadkit .atfx-leadkit__combobox-option.is-active {
+  background: var(--atfx-option-hover);
+}
+
+.atfx-leadkit .atfx-leadkit__combobox-option[aria-selected="true"] {
+  background: var(--atfx-option-selected);
+  font-weight: 600;
+}
+
+/* The native select stays for the value and the contract; it must never be seen or hit. */
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit select.atfx-leadkit__native-select {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─── Consent ─────────────────────────────────────────────────────────────────────── */
 
 .atfx-leadkit .atfx-leadkit__field--consent {
-  gap: 0.5rem;
+  gap: 4px;
 }
 
 .atfx-leadkit .atfx-leadkit__consent-row {
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr);
-  column-gap: 0.625rem;
+  column-gap: 10px;
   align-items: start;
 }
 
@@ -109,47 +378,244 @@
   width: 24px;
   height: 24px;
   margin: 0;
-  border: 1px solid var(--atfx-border);
-  border-radius: 0.25rem;
-  background: var(--atfx-input-bg);
-  color: var(--atfx-fg);
-  -webkit-appearance: checkbox;
-  appearance: auto;
+  border: 2px solid var(--atfx-border);
+  border-radius: 2px;
+  background: var(--atfx-input-bg) no-repeat center / 11px 11px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__checkbox:checked {
+  border-color: var(--atfx-accent);
+  background-color: var(--atfx-accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5.2 4.3 8.5 11 1.5' fill='none' stroke='%23002b36' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__checkbox:focus {
+  outline: 2px solid var(--atfx-focus);
+  outline-offset: 2px;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__checkbox[aria-invalid="true"] {
+  border-color: var(--atfx-danger);
 }
 
 .atfx-leadkit .atfx-leadkit__consent-label,
 .atfx-leadkit .atfx-leadkit__consent-privacy {
   margin: 0;
   color: var(--atfx-muted);
-  font-size: 0.9375rem;
+  font-size: 12.8px;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.atfx-leadkit .atfx-leadkit__consent-privacy {
+  padding-left: 34px;
+  cursor: auto;
 }
 
 .atfx-leadkit .atfx-leadkit__consent-privacy a {
   color: var(--atfx-fg);
+  text-decoration: underline;
 }
 
-.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit {
-  background: var(--atfx-button-bg);
-  color: var(--atfx-button-fg);
-  border-color: transparent;
-  cursor: pointer;
-  font-weight: 600;
-}
+/* ─── Errors ──────────────────────────────────────────────────────────────────────── */
 
-.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit[disabled] {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
+/* Out of flow, inside the row gap reserved for it: showing an error never moves the rows. */
 .atfx-leadkit .atfx-leadkit__error {
-  margin: 0;
-  color: var(--atfx-danger);
-  font-size: 0.875rem;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  margin: 6px 0 0;
+  color: var(--atfx-danger-text);
+  font-size: 12.5px;
+  line-height: 16px;
+}
+
+/* The consent error can wrap to two lines on phones; it is the last field, so it may push the button. */
+.atfx-leadkit .atfx-leadkit__field--consent .atfx-leadkit__error {
+  position: static;
+  margin-top: 2px;
+  padding-left: 34px;
 }
 
 .atfx-leadkit .atfx-leadkit__error[hidden] {
   display: none;
 }
+
+/* ─── Submit (at_forms button: shrinking background + rolling letters) ────────────── */
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit {
+  position: relative;
+  display: grid;
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 2.5em;
+  background: transparent;
+  color: var(--atfx-button-fg);
+  font-family: inherit;
+  font-size: 0.95em;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.atfx-leadkit .atfx-leadkit__submit-bg {
+  grid-area: 1 / 1;
+  border-radius: 2.5em;
+  background: var(--atfx-button-bg);
+  transition: transform 0.45s var(--atfx-ease);
+}
+
+.atfx-leadkit .atfx-leadkit__submit-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75em 1em;
+}
+
+.atfx-leadkit .atfx-leadkit__submit-text {
+  -webkit-clip-path: inset(-10% 0%);
+  clip-path: inset(-10% 0%);
+}
+
+.atfx-leadkit .atfx-leadkit__submit-text span {
+  display: inline-block;
+  white-space: pre;
+  text-shadow: 0 1.3em currentColor;
+  transition: transform 0.6s var(--atfx-ease);
+  transition-delay: calc(var(--atfx-index, 0) * 15ms);
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit:focus {
+  outline: 2px solid var(--atfx-focus);
+  outline-offset: 2px;
+}
+
+.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__submit[disabled] {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.atfx-leadkit[aria-busy="true"] .atfx-leadkit__submit-text {
+  visibility: hidden;
+}
+
+.atfx-leadkit[aria-busy="true"] .atfx-leadkit__submit-inner::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.1em;
+  height: 1.1em;
+  margin: -0.55em 0 0 -0.55em;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: var(--atfx-button-fg);
+  border-radius: 50%;
+  animation: atfx-leadkit-spin 0.6s linear infinite;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .atfx-leadkit .atfx-leadkit__submit:hover .atfx-leadkit__submit-bg {
+    transform: scale(0.99, 0.87);
+    transition: transform 0.55s var(--atfx-ease) 0.05s;
+  }
+
+  .atfx-leadkit .atfx-leadkit__submit:hover .atfx-leadkit__submit-text span {
+    transform: translateY(-1.3em);
+  }
+}
+
+/* ─── Result states (rendered in the status region next to the form) ──────────────── */
+
+[data-atfx-leadkit] .atfx-leadkit-status .atfx-leadkit-state {
+  box-sizing: border-box;
+  margin: 0;
+  color: var(--atfx-fg);
+  font-family: inherit;
+}
+
+[data-atfx-leadkit] .atfx-leadkit-status .atfx-leadkit-state--thanks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px clamp(20px, 5vw, 72px);
+  border: 1px solid var(--atfx-card-border);
+  border-radius: 32px;
+  background: var(--atfx-bg);
+  text-align: center;
+}
+
+[data-atfx-leadkit] .atfx-leadkit-status .atfx-leadkit-state--thanks::before {
+  content: "";
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(34, 211, 238, 0.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5.2 4.3 8.5 11 1.5' fill='none' stroke='%2322d3ee' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / 22px 18px;
+}
+
+[data-atfx-leadkit] .atfx-leadkit-status .atfx-leadkit-state__title {
+  margin: 0;
+  color: var(--atfx-fg);
+  font-size: 1.25em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+[data-atfx-leadkit] .atfx-leadkit-status .atfx-leadkit-state__message {
+  max-width: 36ch;
+  margin: 0;
+  color: var(--atfx-muted);
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+[data-atfx-leadkit] .atfx-leadkit-status .atfx-leadkit-state--rejected,
+[data-atfx-leadkit] .atfx-leadkit-status .atfx-leadkit-state--unknown {
+  margin-top: 16px;
+  padding: 0.75em 1em;
+  border-left: 3px solid var(--atfx-danger);
+  border-radius: 4px;
+  background: rgba(240, 68, 56, 0.1);
+  color: var(--atfx-danger-text);
+  font-size: 0.85em;
+}
+
+[data-atfx-leadkit] .atfx-leadkit-status .atfx-leadkit-state--unknown p {
+  margin: 0 0 0.5em;
+}
+
+[data-atfx-leadkit] .atfx-leadkit-status .atfx-leadkit-state__action {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 0.75em 1.5em;
+  border: 0;
+  border-radius: 2.5em;
+  background: var(--atfx-button-bg);
+  color: var(--atfx-button-fg);
+  font-family: inherit;
+  font-size: 0.95em;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ─── Honeypot ────────────────────────────────────────────────────────────────────── */
 
 .atfx-leadkit .atfx-leadkit__honeypot-container {
   position: absolute !important;
@@ -169,6 +635,14 @@
   left: -9999px !important;
 }
 
+/* ─── Phones: one column, as at_forms below 600px ─────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .atfx-leadkit .atfx-leadkit__field {
+    grid-column: 1 / -1;
+  }
+}
+
 @keyframes atfx-leadkit-enter {
   from {
     opacity: 0;
@@ -180,8 +654,51 @@
   }
 }
 
+@keyframes atfx-leadkit-shake {
+  0% {
+    transform: translateX(0);
+  }
+  28% {
+    transform: translateX(5px);
+  }
+  57% {
+    transform: translateX(-5px);
+  }
+  78% {
+    transform: translateX(3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes atfx-leadkit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .atfx-leadkit {
+    animation: none;
+  }
+
+  .atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit input.atfx-leadkit__control[aria-invalid="true"],
+  .atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit.atfx-leadkit button.atfx-leadkit__combobox-trigger[aria-invalid="true"] {
+    animation: none;
+  }
+
+  .atfx-leadkit .atfx-leadkit__field-icon,
+  .atfx-leadkit .atfx-leadkit__combobox::after,
+  .atfx-leadkit .atfx-leadkit__combobox-panel,
+  .atfx-leadkit .atfx-leadkit__combobox-panel.is-open,
+  .atfx-leadkit .atfx-leadkit__combobox-panel.is-closing,
+  .atfx-leadkit .atfx-leadkit__submit-bg,
+  .atfx-leadkit .atfx-leadkit__submit-text span {
+    transition: none;
+  }
+
+  .atfx-leadkit[aria-busy="true"] .atfx-leadkit__submit-inner::after {
     animation: none;
   }
 }

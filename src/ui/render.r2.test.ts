@@ -83,15 +83,20 @@ describe("point 2: labels in both directions", () => {
         accepted: dict.acceptance,
       };
       const controls = Array.from(form.querySelectorAll<HTMLElement>("input, select")).filter(
-        (el) => !el.closest(".atfx-leadkit__honeypot-container"),
+        (el) => !el.closest(".atfx-leadkit__honeypot-container") && !el.matches(".atfx-leadkit__combobox-search"),
       );
       expect(controls).toHaveLength(8);
       for (const control of controls) {
-        const labels = form.querySelectorAll<HTMLLabelElement>(`label[for="${control.id}"]`);
+        // Enhanced selects are hidden from assistive tech; their label belongs to the visible trigger.
+        const target = control instanceof HTMLSelectElement ? `${control.id}-trigger` : control.id;
+        const labels = form.querySelectorAll<HTMLLabelElement>(`label[for="${target}"]`);
         const name = control.dataset.atfxField!;
         expect(labels, name).toHaveLength(1);
-        expect(labels[0]!.textContent, name).not.toBe("");
-        expect(labels[0]!.textContent, name).toBe(expected[name]);
+        expect(spokenText(labels[0]!), name).not.toBe("");
+        expect(spokenText(labels[0]!), name).toBe(expected[name]);
+      }
+      for (const search of form.querySelectorAll<HTMLInputElement>(".atfx-leadkit__combobox-search")) {
+        expect(search.getAttribute("aria-label")).toBe(dict.placeholders.search);
       }
     }
   });
@@ -393,3 +398,10 @@ describe("round 4: focus indicator", () => {
     expect(mixedFocusLists(css)).toEqual([]);
   });
 });
+
+// The required asterisk is aria-hidden decoration, so it is not part of the accessible name.
+function spokenText(label: HTMLLabelElement): string {
+  const clone = label.cloneNode(true) as HTMLLabelElement;
+  clone.querySelectorAll('[aria-hidden="true"]').forEach((node) => node.remove());
+  return (clone.textContent ?? "").trim();
+}
