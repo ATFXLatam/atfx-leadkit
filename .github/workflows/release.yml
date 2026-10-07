@@ -1,0 +1,97 @@
+name: release
+
+# Un tag v* publica un GitHub Release inmutable y despliega el almacen completo.
+# workflow_dispatch solo re-despliega lo ya publicado: nunca construye bytes nuevos.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions: {}
+
+# Dos deploys en paralelo podrian dejar servido un almacen sin el release mas nuevo.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run typecheck
+      - run: npm run test:cov
+      - run: npm run build
+      - name: tag igual a package.json
+        run: test "$GITHUB_REF_NAME" = "v$(node -p 'require("./package.json").version')"
+      - run: node scripts/release.mjs prepare "${GITHUB_REF_NAME#v}" out
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: out/*.js
+      # Un release inmutable no acepta archivos despues de publicado: se adjunta todo en borrador.
+      - name: publicar release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "$GITHUB_REF_NAME" \
+            --notes-file out/snippets.md out/*.js out/release.json
+          gh release edit "$GITHUB_REF_NAME" --draft=false
+
+  deploy:
+    name: deploy
+    needs: build
+    if: always() && (needs.build.result == 'success' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    permissions:
+      contents: read
+      attestations: read
+    env:
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      # Se sirven los bytes guardados, nunca un rebuild: el hash de esbuild no es reproducible.
+      - name: descargar y verificar releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir downloads
+          gh release list --exclude-drafts --limit 1000 --json tagName --jq '.[].tagName' |
+          while read -r tag; do
+            gh release download "$tag" --dir "downloads/$tag" --pattern '*.js' --pattern release.json
+            for file in "downloads/$tag"/*.js; do
+              gh attestation verify "$file" --repo "$GITHUB_REPOSITORY" \
+                --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/release.yml"
+            done
+          done
+      - run: node scripts/release.mjs assemble downloads site
+      - run: npm install --global vercel@59.11.7
+      - name: deploy a Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel pull --yes --environment=production --cwd site --token "$VERCEL_TOKEN"
+          vercel build --prod --cwd site --token "$VERCEL_TOKEN"
+          vercel deploy --prebuilt --prod --cwd site --token "$VERCEL_TOKEN"
+      - run: node scripts/release.mjs smoke site

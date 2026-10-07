@@ -36,7 +36,7 @@ reviewer y commit de Karen). Una sesión empieza solo cuando todas sus dependenc
 | s11 | Implementador | Thank-you inline con variantes webinar/producto y conversiones post `success:true` | s9 | D-16, D-24, D-25, D-26, D-27, D-28 | BLOQUEADA |
 | s12 | Implementador | Cumplimiento: avisos y textos legales por idioma | s9 | D-06, D-17, D-28 | BLOQUEADA |
 | s13 | Implementador | E2E Playwright + presupuesto de peso | s9 | D-19 | BLOQUEADA |
-| s14 | Implementador + Karen | Distribución y CI de release (npm + SRI + provenance) | s13 | D-13, D-18, D-29, D-30, D-31, D-32 | BLOQUEADA |
+| s14 | Implementador + Karen | Distribución y CI de release (Vercel + GitHub Releases inmutables + SRI + attestation) | s13 (solo el primer release) | D-13, D-18, D-29, D-30, D-31 | LISTA |
 | s15 | Karen / IT | Caducidad y anti-abuso del lado del servidor (mu-plugin WordPress) | s10 | D-14, D-15, D-20, D-21, D-22, D-23, D-24 | BLOQUEADA |
 | s16 | Karen | `/pentest` sobre el harness local antes del primer release | s13, s14 | — | BLOQUEADA |
 
