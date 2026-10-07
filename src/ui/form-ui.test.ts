@@ -43,6 +43,22 @@ afterEach(() => {
 });
 
 describe("createFormUi", () => {
+  it("an invalid select marks and focuses the visible combobox trigger, not the hidden select", () => {
+    const { form, ui } = instance("cbx");
+    ui.showFieldErrors({ country: "Selecciona tu país" });
+    ui.focusFirstInvalid("country");
+
+    const trigger = form.querySelector<HTMLButtonElement>('[data-atfx-control-for="country"]')!;
+    const error = form.querySelector<HTMLElement>('[data-atfx-field-error="country"]')!;
+    expect(trigger.getAttribute("aria-invalid")).toBe("true");
+    expect(trigger.getAttribute("aria-describedby")).toBe(error.id);
+    expect(document.activeElement).toBe(trigger);
+
+    ui.showFieldErrors({});
+    expect(trigger.hasAttribute("aria-invalid")).toBe(false);
+    expect(trigger.hasAttribute("aria-describedby")).toBe(false);
+  });
+
   it("focusFirstInvalid focuses the control of its own instance", () => {
     const a = instance("a");
     const b = instance("b");

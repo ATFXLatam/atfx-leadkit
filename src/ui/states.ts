@@ -2,6 +2,7 @@ import type { Dict } from "../i18n/types";
 
 export function renderRejected(parent: HTMLElement, message: string): void {
   const paragraph = document.createElement("p");
+  paragraph.className = "atfx-leadkit-state atfx-leadkit-state--rejected";
   paragraph.textContent = message;
   parent.replaceChildren(paragraph);
 }
@@ -13,10 +14,12 @@ export function renderUnknownResult(
   retryLabel: string,
 ): HTMLButtonElement {
   const panel = document.createElement("div");
+  panel.className = "atfx-leadkit-state atfx-leadkit-state--unknown";
   const paragraph = document.createElement("p");
   paragraph.textContent = message;
   const button = document.createElement("button");
   button.type = "button";
+  button.className = "atfx-leadkit-state__action";
   button.textContent = retryLabel;
   button.addEventListener("click", () => {
     onRetry();
@@ -28,9 +31,12 @@ export function renderUnknownResult(
 
 export function renderThankYou(parent: HTMLElement, dict: Dict, zoomLink: string | null): void {
   const panel = document.createElement("div");
+  panel.className = "atfx-leadkit-state atfx-leadkit-state--thanks";
   const title = document.createElement("h2");
+  title.className = "atfx-leadkit-state__title";
   title.textContent = dict.thankYou.title;
   const message = document.createElement("p");
+  message.className = "atfx-leadkit-state__message";
   message.textContent = dict.thankYou.message;
   panel.append(title, message);
   if (zoomLink !== null) panel.append(zoomAnchor(zoomLink, dict.thankYou.zoomCta));
@@ -42,6 +48,7 @@ function zoomAnchor(zoomLink: string, label: string): HTMLAnchorElement {
   link.href = zoomLink;
   link.target = "_blank";
   link.rel = "noopener noreferrer";
+  link.className = "atfx-leadkit-state__action";
   link.textContent = label;
   return link;
 }

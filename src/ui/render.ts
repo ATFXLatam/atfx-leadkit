@@ -10,11 +10,34 @@ import {
   appendDiallingOptions,
   choiceLabel,
   choiceOptions,
+  countryDisplay,
   fieldErrorId,
   fieldId,
   type FieldName,
   resolveFieldDefaults,
 } from "./fields";
+import { enhanceSelect, triggerId } from "./combobox";
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+// Built node by node: src/ui never assigns markup strings (see render.test.ts).
+function errorIcon(): SVGSVGElement {
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  const shapes: ReadonlyArray<Readonly<Record<string, string>>> = [
+    { d: "M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Z", fill: "currentColor", opacity: "0.1" },
+    { d: "M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Z", stroke: "currentColor" },
+    { d: "M12 12.5v-5", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" },
+    { d: "M12 14.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z", fill: "currentColor" },
+  ];
+  for (const attrs of shapes) {
+    const path = document.createElementNS(SVG_NS, "path");
+    for (const [name, value] of Object.entries(attrs)) path.setAttribute(name, value);
+    svg.append(path);
+  }
+  return svg;
+}
 
 export interface FormDefinition {
   readonly key: FormKey;
@@ -77,9 +100,18 @@ export function showFieldErrors(form: HTMLFormElement, errors: Readonly<Record<s
     }
     error.hidden = false;
     error.textContent = message;
-    control.setAttribute("aria-invalid", "true");
-    control.setAttribute("aria-describedby", appendDescribedBy(control.getAttribute("aria-describedby"), error.id));
+    for (const target of describedControls(form, fieldName, control)) {
+      target.setAttribute("aria-invalid", "true");
+      target.setAttribute("aria-describedby", appendDescribedBy(target.getAttribute("aria-describedby"), error.id));
+    }
   }
+}
+
+// The combobox trigger is the control people and screen readers reach, so it carries the
+// error state too; the hidden native select keeps it for the existing contract.
+function describedControls(form: HTMLFormElement, field: FieldName, control: HTMLElement): HTMLElement[] {
+  const trigger = form.querySelector<HTMLElement>(`[data-atfx-control-for="${field}"]`);
+  return trigger === null ? [control] : [control, trigger];
 }
 
 export function setBusy(form: HTMLFormElement, busy: boolean): void {
@@ -102,7 +134,18 @@ function createTextField(
   if (inputMode) {
     input.inputMode = inputMode;
   }
-  return wrapField(field, label, input, instanceId);
+  return wrapField(field, label, withStatusIcon(input), instanceId);
+}
+
+function withStatusIcon(input: HTMLInputElement): HTMLElement {
+  const wrap = document.createElement("div");
+  wrap.className = "atfx-leadkit__input-wrap";
+  const icon = document.createElement("span");
+  icon.className = "atfx-leadkit__field-icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.append(errorIcon());
+  wrap.append(input, icon);
+  return wrap;
 }
 
 function createPhoneField(dict: Dict, instanceId: string): HTMLElement {
@@ -110,30 +153,32 @@ function createPhoneField(dict: Dict, instanceId: string): HTMLElement {
   input.inputMode = "tel";
   input.pattern = PHONE_PATTERN;
   input.title = dict.phoneTitle;
-  return wrapField("phone", dict.labels.phone, input, instanceId);
+  return wrapField("phone", dict.labels.phone, withStatusIcon(input), instanceId);
 }
 
 function createDiallingField(dict: Dict, instanceId: string, selectedDialling: string | null): HTMLElement {
   const select = createSelect("diallingCode", "tel-country-code", instanceId);
   appendDiallingOptions(select, dict.placeholders.select, selectedDialling);
-  return wrapField("diallingCode", dict.labels.diallingCode, select, instanceId);
+  return wrapCombobox("diallingCode", dict.labels.diallingCode, enhanceSelect(select, { searchPlaceholder: dict.placeholders.search }), instanceId);
 }
 
 function createCountryField(dict: Dict, lang: MountAttrs["lang"], instanceId: string, selectedIso3: string | null): HTMLElement {
   const select = createSelect("country", "country", instanceId);
   appendCountryOptions(select, lang, dict.placeholders.select, selectedIso3);
-  return wrapField("country", dict.labels.country, select, instanceId);
+  const combobox = enhanceSelect(select, { searchPlaceholder: dict.placeholders.search, display: countryDisplay });
+  return wrapCombobox("country", dict.labels.country, combobox, instanceId);
 }
 
 function createChoiceField(dict: Dict, formKey: FormKey, instanceId: string): HTMLElement {
   const select = createSelect("choice", "off", instanceId);
   appendChoiceOptions(select, choiceOptions(dict, formKey), dict.placeholders.select);
-  return wrapField("choice", choiceLabel(dict, formKey), select, instanceId);
+  const combobox = enhanceSelect(select, { searchPlaceholder: dict.placeholders.search });
+  return wrapCombobox("choice", choiceLabel(dict, formKey), combobox, instanceId);
 }
 
 function createConsentField(dict: Dict, attrs: MountAttrs, instanceId: string): HTMLElement {
   const wrapper = document.createElement("div");
-  wrapper.className = "atfx-leadkit__field atfx-leadkit__field--consent";
+  wrapper.className = "atfx-leadkit__field atfx-leadkit__field--consent atfx-leadkit__field--accepted";
 
   const row = document.createElement("div");
   row.className = "atfx-leadkit__consent-row";
@@ -180,11 +225,26 @@ function createHoneypot(instanceId: string): HTMLElement {
   return container;
 }
 
+// Same layers as the at_forms button: a background that shrinks on hover and the label split
+// per character so each letter can roll; textContent still equals the label.
 function createSubmit(label: string): HTMLButtonElement {
   const button = document.createElement("button");
   button.type = "submit";
   button.className = "atfx-leadkit__submit";
-  button.textContent = label;
+  const bg = document.createElement("span");
+  bg.className = "atfx-leadkit__submit-bg";
+  const inner = document.createElement("span");
+  inner.className = "atfx-leadkit__submit-inner";
+  const text = document.createElement("span");
+  text.className = "atfx-leadkit__submit-text";
+  Array.from(label).forEach((char, index) => {
+    const span = document.createElement("span");
+    span.textContent = char;
+    span.style.setProperty("--atfx-index", String(index));
+    text.append(span);
+  });
+  inner.append(text);
+  button.append(bg, inner);
   return button;
 }
 
@@ -214,13 +274,29 @@ function createSelect(field: "diallingCode" | "country" | "choice", autocomplete
 }
 
 function wrapField(field: FieldName, labelText: string, control: HTMLElement, instanceId: string): HTMLElement {
+  return buildField(field, labelText, control, fieldId(field, instanceId), instanceId);
+}
+
+// The label points at the trigger: a label for the hidden select would send clicks and the
+// accessible name to an element nobody can reach.
+function wrapCombobox(field: FieldName, labelText: string, combobox: HTMLElement, instanceId: string): HTMLElement {
+  return buildField(field, labelText, combobox, triggerId(fieldId(field, instanceId)), instanceId);
+}
+
+function buildField(field: FieldName, labelText: string, control: HTMLElement, labelFor: string, instanceId: string): HTMLElement {
   const wrapper = document.createElement("div");
-  wrapper.className = "atfx-leadkit__field";
+  wrapper.className = `atfx-leadkit__field atfx-leadkit__field--${field}`;
 
   const label = document.createElement("label");
   label.className = "atfx-leadkit__label";
-  label.htmlFor = fieldId(field, instanceId);
+  label.htmlFor = labelFor;
   label.textContent = labelText;
+  // Visual only: the control already announces required through the required attribute.
+  const mark = document.createElement("span");
+  mark.className = "atfx-leadkit__required";
+  mark.setAttribute("aria-hidden", "true");
+  mark.textContent = "*";
+  label.append(" ", mark);
 
   wrapper.append(label, control, createError(field, instanceId));
   return wrapper;
@@ -247,14 +323,20 @@ function clearErrorState(form: HTMLFormElement): void {
     if (!control) {
       continue;
     }
-    control.removeAttribute("aria-invalid");
-    const cleaned = removeToken(control.getAttribute("aria-describedby"), error.id);
-    if (cleaned === "") {
-      control.removeAttribute("aria-describedby");
-      continue;
+    for (const target of describedControls(form, fieldName, control)) {
+      clearControl(target, error.id);
     }
-    control.setAttribute("aria-describedby", cleaned);
   }
+}
+
+function clearControl(control: HTMLElement, errorId: string): void {
+  control.removeAttribute("aria-invalid");
+  const cleaned = removeToken(control.getAttribute("aria-describedby"), errorId);
+  if (cleaned === "") {
+    control.removeAttribute("aria-describedby");
+    return;
+  }
+  control.setAttribute("aria-describedby", cleaned);
 }
 
 function readStringValue(form: HTMLFormElement, name: string): string {

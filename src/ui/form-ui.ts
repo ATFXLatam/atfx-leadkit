@@ -32,12 +32,18 @@ export function createFormUi(target: FormUiTarget): FormUi {
 }
 
 function focusField(form: HTMLFormElement, field: FieldKey): void {
-  form.querySelector<HTMLElement>(`[data-atfx-field="${field}"]`)?.focus();
+  const target =
+    form.querySelector<HTMLElement>(`[data-atfx-control-for="${field}"]`) ??
+    form.querySelector<HTMLElement>(`[data-atfx-field="${field}"]`);
+  target?.focus();
 }
 
 // Renderers empty their parent, so they only ever receive the status region, never the host.
 function paintState(target: FormUiTarget, state: UiState): void {
   const { form, status, dict, attrs } = target;
+  // The status region sits outside the form, so it needs its own hook for the theme tokens.
+  status.classList.add("atfx-leadkit-status");
+  status.dataset.theme = attrs.theme;
   if (state.kind === "thank-you") {
     hideForm(form);
     renderThankYou(status, dict, state.zoomCta ? attrs.zoomLink : null);

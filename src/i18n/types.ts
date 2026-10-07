@@ -18,6 +18,7 @@ export interface Dict {
   };
   readonly placeholders: {
     readonly select: string;
+    readonly search: string;
   };
   readonly acceptance: string;
   readonly phoneTitle: string;
