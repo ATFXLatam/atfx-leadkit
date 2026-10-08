@@ -53,19 +53,33 @@ Envío en UTC. "Llegó" y "Owner" se llenan al revisar en SF.
 
 | Id | Nombre | Email | Enviado | HTTP | success | aanumber | Llegó | Owner |
 |---|---|---|---|---|---|---|---|---|
-| B0 | Carlos Mendoza Ruiz | test123456@gmail.com | ~16:00 | 200 | true | (no capturado) | | |
-| B1 | Andres Villalobos Ortega | test123458@gmail.com | ~16:12 | 200 | true | wp20261008198063 | | |
-| B2 | Mariana Quiroga Salinas | test123459@gmail.com | ~16:12 | 200 | true | wp20261008726616 | | |
-| A1 | Valeria Ibarra Soto | test123460@gmail.com | 16:27:46 | 200 | true | wp20261008664288 | | |
-| A2 | Rodrigo Paredes Luna | test123461@gmail.com | 16:27:55 | 200 | true | wp20261008482028 | | |
-| C1 | Fernanda Castillo Nava | test123462@gmail.com | 16:28:03 | 200 | true | wp20261008438557 | | |
-| C2 | Diego Salazar Rivas | test123463@gmail.com | 16:28:10 | 200 | true | wp20261008892120 | | |
-| E1 | Lucia Herrera Campos | test123464@gmail.com | 16:28:17 | 200 | true | wp20261008847521 | | |
-| F1 | Jorge Medina Fuentes | test123465@hotmail.com | 16:28:23 | 200 | true | wp20261008935138 | | |
-| N1 | Paola Reyes Aguilar | test123466@gmail.com | 16:28:29 | 200 | true | wp20261008733902 | | |
-| N2 | Ivan Cordero Pena | test123467@gmail.com | 16:28:35 | 200 | true | wp20261008737666 | | |
+| B0 | Carlos Mendoza Ruiz | test123456@gmail.com | ~16:00 | 200 | true | (no capturado) | no (17:09) | - |
+| B1 | Andres Villalobos Ortega | test123458@gmail.com | ~16:12 | 200 | true | wp20261008198063 | no (17:09) | - |
+| B2 | Mariana Quiroga Salinas | test123459@gmail.com | ~16:12 | 200 | true | wp20261008726616 | no (17:09) | - |
+| A1 | Valeria Ibarra Soto | test123460@gmail.com | 16:27:46 | 200 | true | wp20261008664288 | no (17:09) | - |
+| A2 | Rodrigo Paredes Luna | test123461@gmail.com | 16:27:55 | 200 | true | wp20261008482028 | no (17:09) | - |
+| C1 | Fernanda Castillo Nava | test123462@gmail.com | 16:28:03 | 200 | true | wp20261008438557 | no (17:09) | - |
+| C2 | Diego Salazar Rivas | test123463@gmail.com | 16:28:10 | 200 | true | wp20261008892120 | no (17:09) | - |
+| E1 | Lucia Herrera Campos | test123464@gmail.com | 16:28:17 | 200 | true | wp20261008847521 | no (17:09) | - |
+| F1 | Jorge Medina Fuentes | test123465@hotmail.com | 16:28:23 | 200 | true | wp20261008935138 | no (17:09) | - |
+| N1 | Paola Reyes Aguilar | test123466@gmail.com | 16:28:29 | 200 | true | wp20261008733902 | no (17:09) | - |
+| N2 | Ivan Cordero Pena | test123467@gmail.com | 16:28:35 | 200 | true | wp20261008737666 | no (17:09) | - |
 
-Revisión: a partir de 17:09 UTC.
+| G1 | Sofia Navarro Gil | pokernight.a1@debugtest.com | 17:10:36 | 200 | true | wp20261008642685 | | |
+| G2 | Tomas Bravo Lira | pokernight.c1@debugtest.com | 17:10:43 | 200 | true | wp20261008288904 | | |
+
+Revisión 1 (17:09 UTC, 40 min después): ninguno de los 11 aparece en la búsqueda de Leads
+(`test1234*`, 0 resultados). La misma búsqueda sí devuelve 11 leads `@debugtest.com` de junio,
+así que el usuario de Karen ve leads de prueba: no es visibilidad.
+
+Casos agregados tras la revisión 1 (mismo esquema, dominio que llegaba en junio):
+
+| Id | Qué prueba | Diferencia con el esquema común |
+|---|---|---|
+| G1 | ¿el bloqueo es el email gmail con "test"? | email `@debugtest.com` |
+| G2 | idem + owner | email `@debugtest.com`, `OwnerId__c=Ergin` |
+
+Revisión 2: a partir de 17:51 UTC.
 
 ## Lectura esperada
 
