@@ -65,8 +65,8 @@ Envío en UTC. "Llegó" y "Owner" se llenan al revisar en SF.
 | N1 | Paola Reyes Aguilar | test123466@gmail.com | 16:28:29 | 200 | true | wp20261008733902 | no (17:09) | - |
 | N2 | Ivan Cordero Pena | test123467@gmail.com | 16:28:35 | 200 | true | wp20261008737666 | no (17:09) | - |
 
-| G1 | Sofia Navarro Gil | pokernight.a1@debugtest.com | 17:10:36 | 200 | true | wp20261008642685 | | |
-| G2 | Tomas Bravo Lira | pokernight.c1@debugtest.com | 17:10:43 | 200 | true | wp20261008288904 | | |
+| G1 | Sofia Navarro Gil | pokernight.a1@debugtest.com | 17:10:36 | 200 | true | wp20261008642685 | no (17:51) | - |
+| G2 | Tomas Bravo Lira | pokernight.c1@debugtest.com | 17:10:43 | 200 | true | wp20261008288904 | no (17:51) | - |
 
 Revisión 1 (17:09 UTC, 40 min después): ninguno de los 11 aparece en la búsqueda de Leads
 (`test1234*`, 0 resultados). La misma búsqueda sí devuelve 11 leads `@debugtest.com` de junio,
@@ -88,3 +88,20 @@ Revisión 2: a partir de 17:51 UTC.
 - Llega E1 y no A1: el pipeline filtra por `referrer` (landing nueva no registrada).
 - N1/N2 llegan: los fixes de v1.0.11 ya no son necesarios. No llegan: confirma que siguen siéndolo.
 - No llega ninguno: el pipeline está caído o descarta emails con "test"; repetir con un email sin "test".
+
+Revisión 2 (17:51 UTC): G1 y G2 no llegaron; la búsqueda `debugtest.com` sigue en los mismos 11
+leads de junio. El dominio que llegaba en junio tampoco crea leads hoy.
+
+Ronda karentest (17:23 UTC, `karentest01..08@gmail.com`, todos `success:true` con aanumber):
+K1 legacy por defecto, K2 webinar, K3 owner Ergin, K4 payload leadkit, K5 Perú (+51/PER),
+K6 idioma inglés, K7 experiencia Intermedio, K8 referrer con UTMs.
+
+Patrón de los leads que sí llegaron (vista "All Lead", Created Date desc): el más reciente es del
+4 oct 2026 21:15; todos con owner `mamit` y UTM `mx_atfx_retail_*_masteraccreg` (LPs Oro, Petróleo,
+Bono). Desde entonces el usuario de Karen no ve ningún lead nuevo.
+
+Conclusión: ninguna variante del payload (incluido el esquema exacto de atfx-forms v1.0.12 y el
+referrer de una landing legacy) crea leads visibles hoy. El fallo está en el pipeline
+WordPress -> Salesforce o en la visibilidad, no en el form. Escalar a CRM/IT con los aanumber de
+esta tabla. Mientras tanto la Poker Night guarda los leads en Google Sheets (PR #5 de
+AT_PokerNight_Oct2026).
