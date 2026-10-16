@@ -57,7 +57,7 @@ cualquier diff en el payload rompe CI.
 | `form_fields[Webinar_topic__c]` | texto, máximo 120 | solo en modo webinar y si hay atributo |
 | `form_fields[Webinar_date_time__c]` | `YYYY-MM-DD HH:mm:ss` | solo en modo webinar y si hay atributo |
 | `form_fields[Comment]` | `Webinar Topic: <t> \| Webinar Date & Time: <d> \| Webinar Zoom Link: <z>` (partes ausentes se omiten; el link siempre va) | solo en modo webinar |
-| `form_fields[CXD_token__c]` | `cxd` de Cellxpert: el de la URL o, si no trae, el recordado de la última visita (30 días); solo `[A-Za-z0-9_-]{1,64}` | solo si hay `cxd`. Pedido por IT de ATFX el 2026-10-16 (correo + video): es el campo oculto que los forms nativos llenan con Request Parameter `cxd`. El form #593 necesita ese campo oculto con ID `CXD_token__c` para que Elementor lo procese |
+| `form_fields[CXD_token__c]` | `cxd` de Cellxpert tomado de la URL de la página que envía (igual que el form nativo, sin persistencia); solo `[A-Za-z0-9_-]{1,64}` | solo si hay `cxd`. Pedido por IT de ATFX el 2026-10-16 (correo + video): es el campo oculto que los forms nativos llenan con Request Parameter `cxd`. El form #593 necesita ese campo oculto con ID `CXD_token__c` para que Elementor lo procese |
 
 ### `lead_source`
 
