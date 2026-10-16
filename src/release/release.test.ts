@@ -35,6 +35,11 @@ interface ReleaseModule {
     index: { versions: string[] };
   };
   readonly smoke: (files: FileEntry[], fetchImpl: (url: string) => Promise<FakeResponse>, origin?: string) => Promise<string[]>;
+  readonly smokeUntilReady: (
+    files: FileEntry[],
+    fetchImpl: (url: string) => Promise<FakeResponse>,
+    options?: { origin?: string; attempts?: number; waitMs?: number; sleep?: (ms: number) => Promise<void> },
+  ) => Promise<string[]>;
 }
 
 async function load(): Promise<ReleaseModule> {
@@ -149,6 +154,27 @@ describe("smoke", () => {
     const { "access-control-allow-origin": _cors, ...noCors } = good;
     const errors = await smoke([{ path: "/releases/1.0.0/lead-A.js", integrity: integrityOf(bytes("x")) }], respond(bytes("y"), noCors));
     expect(errors.join("\n")).toMatch(/access-control-allow-origin/);
+    expect(errors.join("\n")).toMatch(/hash distinto/);
+  });
+
+  test("waits out the 404 Vercel serves while the production alias moves", async () => {
+    const { smokeUntilReady, integrityOf } = await load();
+    const body = bytes("x");
+    const ok = respond(body, good);
+    let calls = 0;
+    const fetchImpl = async (): Promise<FakeResponse> => {
+      calls += 1;
+      return calls === 1 ? { ...(await ok()), status: 404 } : ok();
+    };
+    const files = [{ path: "/releases/1.0.0/lead-A.js", integrity: integrityOf(body) }];
+    expect(await smokeUntilReady(files, fetchImpl, { sleep: async () => undefined })).toEqual([]);
+    expect(calls).toBe(2);
+  });
+
+  test("still fails when the problem outlives every attempt", async () => {
+    const { smokeUntilReady, integrityOf } = await load();
+    const files = [{ path: "/releases/1.0.0/lead-A.js", integrity: integrityOf(bytes("x")) }];
+    const errors = await smokeUntilReady(files, respond(bytes("y"), good), { attempts: 3, sleep: async () => undefined });
     expect(errors.join("\n")).toMatch(/hash distinto/);
   });
 });

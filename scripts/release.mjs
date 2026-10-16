@@ -139,6 +139,24 @@ export async function smoke(files, fetchImpl, origin = ORIGIN) {
   return errors;
 }
 
+/**
+ * Vercel answers 404 for a few seconds after `deploy --prod` while the alias moves, so a single
+ * pass right after the deploy fails a good release. Only a failure that outlives the wait counts.
+ * @param {{ path: string, integrity: string }[]} files
+ * @param {Parameters<typeof smoke>[1]} fetchImpl
+ * @param {{ origin?: string, attempts?: number, waitMs?: number, sleep?: (ms: number) => Promise<void> }} [options]
+ */
+export async function smokeUntilReady(files, fetchImpl, options = {}) {
+  const { origin = ORIGIN, attempts = 10, waitMs = 15_000, sleep = (ms) => new Promise((r) => setTimeout(r, ms)) } = options;
+  let errors = [];
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    errors = await smoke(files, fetchImpl, origin);
+    if (errors.length === 0 || attempt === attempts) return errors;
+    await sleep(waitMs);
+  }
+  return errors;
+}
+
 /** @param {string} version @param {string} outDir */
 function cliPrepare(version, outDir) {
   const manifest = JSON.parse(readFileSync("dist/manifest.json", "utf8"));
@@ -178,7 +196,7 @@ function cliAssemble(downloadsDir, siteDir) {
 /** @param {string} siteDir @param {string | undefined} origin */
 async function cliSmoke(siteDir, origin) {
   const files = JSON.parse(readFileSync(join(siteDir, "files.json"), "utf8"));
-  const errors = await smoke(files, fetch, origin ?? ORIGIN);
+  const errors = await smokeUntilReady(files, fetch, { origin: origin ?? ORIGIN });
   if (errors.length > 0) throw new Error(`smoke fallo:\n${errors.join("\n")}`);
   console.log(`smoke ok: ${files.length} archivos`);
 }
