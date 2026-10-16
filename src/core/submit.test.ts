@@ -21,6 +21,17 @@ afterEach(() => {
 });
 
 describe("submitLead", () => {
+  test("keeps usertype next to aanumber on success", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async () =>
+      jsonResponse({ success: true, data: { data: { aanumber: "AA-1", usertype: "demo" } } }),
+    );
+    await expect(submitLead(entries, { fetchImpl: fetchMock })).resolves.toEqual({
+      kind: "ok",
+      aanumber: "AA-1",
+      usertype: "demo",
+    });
+  });
+
   test("sends one POST with endpoint, header and exact FormData body", async () => {
     const fetchMock = vi.fn<typeof fetch>(
       async () =>

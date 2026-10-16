@@ -61,6 +61,9 @@ export function buildPayload(_form: FormKey, attrs: MountAttrs, values: LeadValu
     ["form_fields[Landing_Page_Language__c]", landingLanguage],
     ["form_fields[lead_source]", leadSource],
   );
+  if (typeof page.cxd === "string" && page.cxd !== "") {
+    entries.push(["form_fields[CXD_token__c]", page.cxd]);
+  }
   if (attrs.bdmOwner !== null) {
     entries.push(["form_fields[OwnerId__c]", attrs.bdmOwner]);
   }

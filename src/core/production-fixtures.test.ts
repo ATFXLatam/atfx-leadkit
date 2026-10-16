@@ -47,7 +47,7 @@ describe("production fixtures", () => {
       { fetchImpl: fetchMock },
     );
 
-    expect(result).toStrictEqual({ kind: "ok", aanumber: "wpQATEST0000000001" });
+    expect(result).toStrictEqual({ kind: "ok", aanumber: "wpQATEST0000000001", usertype: "demo" });
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 

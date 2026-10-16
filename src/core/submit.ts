@@ -8,6 +8,7 @@ export type SubmitResult =
   | {
       readonly kind: "ok";
       readonly aanumber?: string;
+      readonly usertype?: string;
     }
   | {
       readonly kind: "rejected";
@@ -51,12 +52,11 @@ export async function submitLead(
     }
 
     if (parsed.success) {
-      if (parsed.data.data?.aanumber === undefined) {
-        return { kind: "ok" };
-      }
+      const { aanumber, usertype } = parsed.data.data ?? {};
       return {
         kind: "ok",
-        aanumber: parsed.data.data.aanumber,
+        ...(aanumber === undefined ? {} : { aanumber }),
+        ...(usertype === undefined ? {} : { usertype }),
       };
     }
 

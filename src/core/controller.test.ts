@@ -1013,3 +1013,22 @@ describe("openAboutBlank", () => {
     expect(vi.mocked(window.open).mock.calls[0]).toHaveLength(2);
   });
 });
+
+describe("Adobe registration via the Elementor submit_success event", () => {
+  it("re-fires submit_success on document with the shape atfx-aanumberc.js reads", async () => {
+    const received: unknown[] = [];
+    const trigger = vi.fn((name: string, args: readonly unknown[]) => {
+      received.push({ name, args });
+    });
+    const jquery = vi.fn(() => ({ trigger }));
+    vi.stubGlobal("jQuery", jquery);
+    const harness = mount({ integrations: DEFAULT_INTEGRATIONS });
+    harness.setResult({ kind: "ok", aanumber: "AA-100", usertype: "demo" });
+    harness.fire();
+    await settle();
+    expect(jquery).toHaveBeenCalledWith(document);
+    expect(received).toEqual([
+      { name: "submit_success", args: [{ data: { aanumber: "AA-100", usertype: "demo" } }] },
+    ]);
+  });
+});

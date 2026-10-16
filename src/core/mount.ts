@@ -5,6 +5,7 @@ import { createFormUi } from "../ui/form-ui";
 import { fieldId } from "../ui/fields";
 import { renderForm, type FormDefinition } from "../ui/render";
 import { renderRejected } from "../ui/states";
+import { browserStorage, resolveCxd } from "./attribution";
 import { parseMountAttrs } from "./attrs";
 import { DEFAULT_INTEGRATIONS, bindController, closedMessage, openAboutBlank } from "./controller";
 import type { ControllerDeps } from "./controller";
@@ -131,7 +132,11 @@ function controllerDeps(ui: ControllerDeps["ui"]): ControllerDeps {
     submit: submitLead,
     now: () => Date.now(),
     openPopup: openAboutBlank,
-    page: () => ({ href: window.location.href, title: document.title }),
+    page: () => ({
+      href: window.location.href,
+      title: document.title,
+      cxd: resolveCxd(window.location.href, browserStorage(), Date.now()),
+    }),
     integrations: DEFAULT_INTEGRATIONS,
     schedule: scheduleState,
     ui,
@@ -175,6 +180,8 @@ function mountHost(definition: FormDefinition, host: HTMLElement, api: LeadkitGl
   // Set before rendering so an overlapping pass or another bundle copy skips this host.
   host.setAttribute(MOUNTED_ATTR, "");
   mountedHosts.add(host);
+  // Remembered on arrival, not on submit: the visitor may register on a later page.
+  resolveCxd(window.location.href, browserStorage(), Date.now());
   const attrs = parseHostAttrs(host);
   const dict = resolveDict(attrs.lang);
   const schedule = scheduleState(attrs, Date.now());
