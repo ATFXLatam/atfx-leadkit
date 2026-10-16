@@ -24,9 +24,9 @@ export const CONSENT_PRIVACY_URLS: Readonly<Record<Lang, string>> = {
 };
 
 export const CONSENT_PRIVACY_TEXT: Readonly<Record<Lang, string>> = {
-  es: "PENDIENTE_LEGAL: Política de Privacidad",
-  en: "PENDIENTE_LEGAL: Privacy Policy",
-  pt: "PENDIENTE_LEGAL: Política de Privacidade",
+  es: "Política de Privacidad",
+  en: "Privacy Policy",
+  pt: "Política de Privacidade",
 };
 
 export interface FieldDefaults {

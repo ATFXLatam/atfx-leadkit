@@ -15,8 +15,9 @@ export const en = {
     select: "Select",
     search: "Search...",
   },
+  // No native English form exists on atfxlatam.com: faithful translation of the Spanish #593 text.
   acceptance:
-    "PENDIENTE_LEGAL: I authorize ATFX to use my contact details to respond to my request.",
+    "By submitting this form, you agree that ATFX may use the contact information you provide to contact you about our products and services. You may unsubscribe from these communications at any time. For more details on how to unsubscribe, as well as information about our privacy practices and commitment to protecting your personal data, please review our Privacy Policy.",
   phoneTitle: "Only numbers and phone characters (#, -, *, etc).",
   submit: "Register now",
   leadOptions: [
@@ -38,7 +39,7 @@ export const en = {
     country: "Select your country",
     tradingExperience: "Select your experience",
     interest: "Select a topic",
-    acceptance: "PENDIENTE_LEGAL: You must authorize ATFX to contact you about your request.",
+    acceptance: "You must agree to the use of your contact information to continue.",
   },
   errors: {
     unknownResult: "We couldn't confirm whether the registration was sent.",
