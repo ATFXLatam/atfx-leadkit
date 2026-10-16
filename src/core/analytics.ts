@@ -1,6 +1,10 @@
 import type { FormKey } from "../contract/types";
 
-export type IntegrationHook = (event: { readonly aanumber?: string; readonly form: FormKey }) => void;
+export type IntegrationHook = (event: {
+  readonly aanumber?: string;
+  readonly usertype?: string;
+  readonly form: FormKey;
+}) => void;
 
 type HookEvent = Parameters<IntegrationHook>[0];
 
@@ -58,4 +62,25 @@ function trackFbq(event: HookEvent): void {
   fbq("track", "Lead", {}, { eventID: event.aanumber });
 }
 
-export const DEFAULT_INTEGRATIONS: readonly IntegrationHook[] = [trackGtag, trackDataLayer, trackFbq];
+type JQueryTrigger = (target: unknown) => { trigger(name: string, args: readonly unknown[]): unknown };
+
+// atfx-aanumberc.js on atfxlatam.com sends Adobe's "registration" event from the jQuery
+// submit_success that Elementor fires; this form never goes through Elementor, so it is
+// re-fired with the same shape. That script keeps its own GDPR gate.
+function trackElementorSuccess(event: HookEvent): void {
+  if (event.aanumber === undefined && event.usertype === undefined) return;
+  const jquery = readGlobal("jQuery");
+  if (typeof jquery !== "function") return;
+  const data = {
+    ...(event.aanumber === undefined ? {} : { aanumber: event.aanumber }),
+    ...(event.usertype === undefined ? {} : { usertype: event.usertype }),
+  };
+  (jquery as JQueryTrigger)(document).trigger("submit_success", [{ data }]);
+}
+
+export const DEFAULT_INTEGRATIONS: readonly IntegrationHook[] = [
+  trackGtag,
+  trackDataLayer,
+  trackFbq,
+  trackElementorSuccess,
+];

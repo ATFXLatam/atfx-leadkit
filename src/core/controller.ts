@@ -189,7 +189,7 @@ function applyResult(
   result: SubmitResult,
 ): void {
   if (result.kind === "ok") {
-    applyOk(ctx, deps, popup, result.aanumber);
+    applyOk(ctx, deps, popup, result);
     return;
   }
   if (result.kind === "rejected") {
@@ -199,7 +199,12 @@ function applyResult(
   applyUnknown(form, ctx, deps, popup);
 }
 
-function applyOk(ctx: InstanceContext, deps: ControllerDeps, popup: Window | null, aanumber: string | undefined): void {
+function applyOk(
+  ctx: InstanceContext,
+  deps: ControllerDeps,
+  popup: Window | null,
+  ids: { readonly aanumber?: string; readonly usertype?: string },
+): void {
   try {
     deps.ui.showState({ kind: "thank-you", zoomCta: ctx.attrs.zoomLink !== null });
   } finally {
@@ -207,7 +212,7 @@ function applyOk(ctx: InstanceContext, deps: ControllerDeps, popup: Window | nul
       if (ctx.attrs.zoomLink !== null) navigatePopup(popup, ctx.attrs.zoomLink);
     } finally {
       // The registration already succeeded; a paint or popup error must not drop the conversion.
-      runIntegrations(deps.integrations, hookEvent(ctx.attrs.form, aanumber));
+      runIntegrations(deps.integrations, hookEvent(ctx.attrs.form, ids));
     }
   }
 }
@@ -241,9 +246,15 @@ function applyUnknown(form: HTMLFormElement, ctx: InstanceContext, deps: Control
   }
 }
 
-function hookEvent(form: FormKey, aanumber: string | undefined): Parameters<IntegrationHook>[0] {
-  if (aanumber === undefined) return { form };
-  return { form, aanumber };
+function hookEvent(
+  form: FormKey,
+  ids: { readonly aanumber?: string; readonly usertype?: string },
+): Parameters<IntegrationHook>[0] {
+  return {
+    form,
+    ...(ids.aanumber === undefined ? {} : { aanumber: ids.aanumber }),
+    ...(ids.usertype === undefined ? {} : { usertype: ids.usertype }),
+  };
 }
 
 function mapFieldErrors(fieldErrors: Readonly<Record<string, string>>): Partial<Record<FieldKey, string>> {
