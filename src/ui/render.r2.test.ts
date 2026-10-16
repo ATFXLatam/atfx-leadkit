@@ -245,10 +245,10 @@ describe("point 7: input types", () => {
   });
 });
 
-describe("point 8: PENDIENTE_LEGAL on the privacy link", () => {
+describe("point 8: privacy link text per language", () => {
   test.each(LANGS)("link text for %s", (lang) => {
     const form = renderForm(input({ attrs: attrs({ lang }), dict: resolveDict(lang) }));
-    expect(form.querySelector('a[data-atfx-consent-privacy="true"]')!.textContent).toContain("PENDIENTE_LEGAL");
+    expect(form.querySelector('a[data-atfx-consent-privacy="true"]')!.textContent).not.toContain("PENDIENTE_LEGAL");
   });
 });
 

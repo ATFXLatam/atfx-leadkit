@@ -15,8 +15,9 @@ export const es = {
     select: "Selecciona",
     search: "Buscar...",
   },
+  // Verbatim from the native Elementor form #593, which is what ATFX already shows on its own pages.
   acceptance:
-    "PENDIENTE_LEGAL: Autorizo a ATFX a usar mi información de contacto para responder mi solicitud.",
+    "Al enviar este formulario, usted acepta que ATFX puede utilizar la información de contacto que proporcione para ponerse en contacto con usted con respecto a nuestros productos y servicios. Puede darse de baja de estas comunicaciones en cualquier momento. Para más detalles sobre cómo darse de baja, así como información sobre nuestras prácticas de privacidad y compromiso con la protección de sus datos personales, por favor revise nuestra Política de Privacidad.",
   phoneTitle: "Solo números y caracteres de teléfono (#, -, *, etc).",
   submit: "Regístrate ahora",
   leadOptions: [
@@ -38,7 +39,7 @@ export const es = {
     country: "Selecciona tu país",
     tradingExperience: "Selecciona tu experiencia",
     interest: "Selecciona un tema",
-    acceptance: "PENDIENTE_LEGAL: Debes autorizar que ATFX te contacte para responder tu solicitud.",
+    acceptance: "Debes aceptar el uso de tu información de contacto para continuar.",
   },
   errors: {
     unknownResult: "No pudimos confirmar si el registro se envió.",

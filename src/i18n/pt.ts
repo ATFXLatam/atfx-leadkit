@@ -15,8 +15,9 @@ export const pt = {
     select: "Selecione",
     search: "Buscar...",
   },
+  // Verbatim from ATFX's native Portuguese Elementor forms (garanta-sua-vaga-gratuita-*).
   acceptance:
-    "PENDIENTE_LEGAL: Autorizo a ATFX a usar meus dados de contato para responder minha solicitação.",
+    "Ao enviar este formulário, você concorda que a ATFX poderá usar as informações de contato fornecidas para entrar em contato com você a respeito de nossos produtos e serviços. Você pode cancelar a assinatura dessas comunicações a qualquer momento. Para obter mais detalhes sobre como cancelar a assinatura, bem como informações sobre nossas práticas de privacidade e nosso compromisso com a proteção de seus dados pessoais, consulte nossa Política de Privacidade.",
   phoneTitle: "Apenas números e caracteres de telefone (#, -, *, etc).",
   submit: "Inscreva-se agora",
   leadOptions: [
@@ -38,7 +39,7 @@ export const pt = {
     country: "Selecione seu país",
     tradingExperience: "Selecione sua experiência",
     interest: "Selecione um tema",
-    acceptance: "PENDIENTE_LEGAL: Você deve autorizar a ATFX a entrar em contato sobre sua solicitação.",
+    acceptance: "Você deve concordar com o uso das suas informações de contato para continuar.",
   },
   errors: {
     unknownResult: "Não foi possível confirmar se o cadastro foi enviado.",

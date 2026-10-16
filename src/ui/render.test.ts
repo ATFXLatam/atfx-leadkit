@@ -361,20 +361,26 @@ describe("leadkit.css", () => {
   });
 });
 
-describe("provisional consent copy and safety", () => {
-  test("every language marks the consent texts PENDIENTE_LEGAL and drops the marketing and terms wording", () => {
+describe("consent copy and safety", () => {
+  test("CA-31: no language ships an empty or PENDIENTE_LEGAL consent text", () => {
     for (const lang of ["es", "en", "pt"] as const) {
       const dict = resolveDict(lang);
-      expect(dict.acceptance).toContain("PENDIENTE_LEGAL");
-      expect(dict.validation.acceptance).toContain("PENDIENTE_LEGAL");
-      expect(dict.acceptance).not.toMatch(/productos|products|produtos/i);
-      expect(dict.validation.acceptance).not.toMatch(/t[eé]rminos|terms|termos/i);
+      for (const text of [dict.acceptance, dict.validation.acceptance]) {
+        expect(text.trim()).not.toBe("");
+        expect(text).not.toContain("PENDIENTE_LEGAL");
+      }
     }
   });
 
-  test("renders the provisional privacy link marked PENDIENTE_LEGAL", () => {
+  test("Spanish consent matches the native Elementor form #593 word for word", () => {
+    expect(resolveDict("es").acceptance).toBe(
+      "Al enviar este formulario, usted acepta que ATFX puede utilizar la información de contacto que proporcione para ponerse en contacto con usted con respecto a nuestros productos y servicios. Puede darse de baja de estas comunicaciones en cualquier momento. Para más detalles sobre cómo darse de baja, así como información sobre nuestras prácticas de privacidad y compromiso con la protección de sus datos personales, por favor revise nuestra Política de Privacidad.",
+    );
+  });
+
+  test("renders the privacy link without a placeholder", () => {
     const form = renderForm(createRenderInput({ instanceId: "legal-1" }));
-    expect(form.querySelector('a[data-atfx-consent-privacy="true"]')?.textContent).toContain("PENDIENTE_LEGAL");
+    expect(form.querySelector('a[data-atfx-consent-privacy="true"]')?.textContent).toBe("Política de Privacidad");
   });
 
   test("leaves the dialling placeholder selected when the country has no prefix", () => {
