@@ -330,6 +330,14 @@ describe("contract payload", () => {
     ]);
   });
 
+  test("sends the Cellxpert cxd as CXD_token__c only when the page has one", () => {
+    const withCxd = buildPayload("lead", attrsBase, valuesBase, { ...pageBase, cxd: "12345_67890" });
+    const without = buildPayload("lead", attrsBase, valuesBase, pageBase);
+
+    expect(withCxd.at(-1)).toEqual(["form_fields[CXD_token__c]", "12345_67890"]);
+    expect(without.some(([key]) => key === "form_fields[CXD_token__c]")).toBe(false);
+  });
+
   test("webinar topic presence is coherent between key and comment with empty-string input", () => {
     const attrs: MountAttrs = {
       ...attrsBase,

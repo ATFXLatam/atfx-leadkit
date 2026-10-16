@@ -33,6 +33,7 @@ export interface LeadValues {
 export interface PageContext {
   readonly href: string;
   readonly title: string;
+  readonly cxd?: string | null;
 }
 
 export type PayloadEntries = ReadonlyArray<readonly [string, string]>;
